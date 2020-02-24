@@ -13,23 +13,26 @@ const Statistic = ({ name, value }) => {
   }
 
   return (
-    <p>
-      {name} {value}
-    </p>
+    <tr>
+      <td>{name}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
-const Statistics = ({ feedback }) => {
-  if (feedback.all > 0) {
+const Statistics = ({ values }) => {
+  if (values.all > 0) {
     return (
-      <div>
-        <Statistic value={feedback.good} name="Good" />
-        <Statistic value={feedback.neutral} name="Neutral" />
-        <Statistic value={feedback.bad} name="Bad" />
-        <Statistic value={feedback.all} name="All" />
-        <Statistic value={feedback.average || 0} name="Average" />
-        <Statistic value={feedback.positive || 0} name="Positive" />
-      </div>
+      <table>
+        <tbody>
+          <Statistic value={values.good} name="Good" />
+          <Statistic value={values.neutral} name="Neutral" />
+          <Statistic value={values.bad} name="Bad" />
+          <Statistic value={values.all} name="All" />
+          <Statistic value={values.average || 0} name="Average" />
+          <Statistic value={values.positive || 0} name="Positive" />
+        </tbody>
+      </table>
     );
   }
 
@@ -52,7 +55,7 @@ const App = () => {
       <Button onButtonClick={() => setNeutral(neutral + 1)} text="Neutral" />
       <Button onButtonClick={() => setBad(bad + 1)} text="Bad" />
       <Section text="Statistics" />
-      <Statistics feedback={{ good, neutral, bad, all, average, positive }} />
+      <Statistics values={{ good, neutral, bad, all, average, positive }} />
     </div>
   );
 };
