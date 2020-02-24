@@ -7,19 +7,28 @@ const Button = ({ onButtonClick, text }) => (
   <button onClick={onButtonClick}>{text}</button>
 );
 
-const Category = ({ name, count }) => (
-  <p>
-    {name} {count}
-  </p>
-);
+const Category = ({ name, total }) => {
+  if (name === 'Positive' && total > 0) {
+    total = `${total}%`;
+  }
 
-const Stats = ({ counts }) => {
+  return (
+    <p>
+      {name} {total}
+    </p>
+  );
+};
+
+const Stats = ({ feedback }) => {
   return (
     <div>
       <h2>Statistics</h2>
-      <Category count={counts.good} name="Good" />
-      <Category count={counts.neutral} name="Neutral" />
-      <Category count={counts.bad} name="Bad" />
+      <Category total={feedback.good} name="Good" />
+      <Category total={feedback.neutral} name="Neutral" />
+      <Category total={feedback.bad} name="Bad" />
+      <Category total={feedback.all} name="All" />
+      <Category total={feedback.average || 0} name="Average" />
+      <Category total={feedback.positive || 0} name="Positive" />
     </div>
   );
 };
@@ -29,13 +38,17 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
+  const all = good + neutral + bad;
+  const average = (good - bad) / all;
+  const positive = (good / all) * 100;
+
   return (
     <div>
       <Header text="Give Feedback" />
       <Button onButtonClick={() => setGood(good + 1)} text="Good" />
       <Button onButtonClick={() => setNeutral(neutral + 1)} text="Neutral" />
       <Button onButtonClick={() => setBad(bad + 1)} text="Bad" />
-      <Stats counts={{ good, neutral, bad }} />
+      <Stats feedback={{ good, neutral, bad, all, average, positive }} />
     </div>
   );
 };
