@@ -7,14 +7,14 @@ const Button = ({ onButtonClick, text }) => (
   <button onClick={onButtonClick}>{text}</button>
 );
 
-const Category = ({ name, total }) => {
+const Statistic = ({ name, value }) => {
   if (name === 'Positive') {
-    total = `${total}%`;
+    value = `${value}%`;
   }
 
   return (
     <p>
-      {name} {total}
+      {name} {value}
     </p>
   );
 };
@@ -23,12 +23,12 @@ const Statistics = ({ feedback }) => {
   if (feedback.all > 0) {
     return (
       <div>
-        <Category total={feedback.good} name="Good" />
-        <Category total={feedback.neutral} name="Neutral" />
-        <Category total={feedback.bad} name="Bad" />
-        <Category total={feedback.all} name="All" />
-        <Category total={feedback.average || 0} name="Average" />
-        <Category total={feedback.positive || 0} name="Positive" />
+        <Statistic value={feedback.good} name="Good" />
+        <Statistic value={feedback.neutral} name="Neutral" />
+        <Statistic value={feedback.bad} name="Bad" />
+        <Statistic value={feedback.all} name="All" />
+        <Statistic value={feedback.average || 0} name="Average" />
+        <Statistic value={feedback.positive || 0} name="Positive" />
       </div>
     );
   }
