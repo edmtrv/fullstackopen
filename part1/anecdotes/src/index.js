@@ -13,11 +13,7 @@ const Anecdote = ({ text, votes }) => {
 };
 
 const Button = ({ onButtonClick, text }) => {
-  return (
-    <div>
-      <button onClick={onButtonClick}>{text}</button>
-    </div>
-  );
+  return <button onClick={onButtonClick}>{text}</button>;
 };
 
 const App = props => {
