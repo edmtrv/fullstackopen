@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-const Header = ({ text }) => <h2>{text}</h2>;
+const Section = ({ text }) => <h2>{text}</h2>;
 
 const Button = ({ onButtonClick, text }) => (
   <button onClick={onButtonClick}>{text}</button>
 );
 
 const Category = ({ name, total }) => {
-  if (name === 'Positive' && total > 0) {
+  if (name === 'Positive') {
     total = `${total}%`;
   }
 
@@ -20,17 +20,20 @@ const Category = ({ name, total }) => {
 };
 
 const Statistics = ({ feedback }) => {
-  return (
-    <div>
-      <h2>Statistics</h2>
-      <Category total={feedback.good} name="Good" />
-      <Category total={feedback.neutral} name="Neutral" />
-      <Category total={feedback.bad} name="Bad" />
-      <Category total={feedback.all} name="All" />
-      <Category total={feedback.average || 0} name="Average" />
-      <Category total={feedback.positive || 0} name="Positive" />
-    </div>
-  );
+  if (feedback.all > 0) {
+    return (
+      <div>
+        <Category total={feedback.good} name="Good" />
+        <Category total={feedback.neutral} name="Neutral" />
+        <Category total={feedback.bad} name="Bad" />
+        <Category total={feedback.all} name="All" />
+        <Category total={feedback.average || 0} name="Average" />
+        <Category total={feedback.positive || 0} name="Positive" />
+      </div>
+    );
+  }
+
+  return <p>No feedback given</p>;
 };
 
 const App = () => {
@@ -44,10 +47,11 @@ const App = () => {
 
   return (
     <div>
-      <Header text="Give Feedback" />
+      <Section text="Give Feedback" />
       <Button onButtonClick={() => setGood(good + 1)} text="Good" />
       <Button onButtonClick={() => setNeutral(neutral + 1)} text="Neutral" />
       <Button onButtonClick={() => setBad(bad + 1)} text="Bad" />
+      <Section text="Statistics" />
       <Statistics feedback={{ good, neutral, bad, all, average, positive }} />
     </div>
   );
