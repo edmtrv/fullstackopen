@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import Person from './Person';
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }]);
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-1234567' }
+  ]);
   const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
 
   const checkPersonExists = input => {
     return persons.some(person => person.name === input);
@@ -15,15 +18,15 @@ const App = () => {
     if (checkPersonExists(newName)) {
       alert(`${newName} is already added to the phonebook`);
     } else {
-      const newPerson = { name: newName };
+      const newPerson = { name: newName, number: newNumber };
       setPersons(persons.concat(newPerson));
     }
     setNewName('');
   };
 
-  const onNameChange = e => {
-    setNewName(e.target.value);
-  };
+  const onNameChange = e => setNewName(e.target.value);
+
+  const onNumberChange = e => setNewNumber(e.target.value);
 
   return (
     <div>
@@ -31,6 +34,9 @@ const App = () => {
       <form onSubmit={onFormSubmit}>
         <div>
           Name: <input onChange={onNameChange} value={newName} />
+        </div>
+        <div>
+          Number: <input onChange={onNumberChange} value={newNumber} />
         </div>
         <div>
           <button type="submit">Add</button>
