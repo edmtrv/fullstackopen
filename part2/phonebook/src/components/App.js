@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Person from './Person';
+import Form from './Form';
+import Persons from './Persons';
 import Filter from './Filter';
 
 const App = () => {
@@ -42,21 +43,15 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter onTermChange={onTermChange} term={newTerm} />
       <h3>Add New</h3>
-      <form onSubmit={onFormSubmit}>
-        <div>
-          Name: <input onChange={onNameChange} value={newName} />
-        </div>
-        <div>
-          Number: <input onChange={onNumberChange} value={newNumber} />
-        </div>
-        <div>
-          <button type="submit">Add</button>
-        </div>
-      </form>
+      <Form
+        onFormSubmit={onFormSubmit}
+        onNameChange={onNameChange}
+        onNumberChange={onNumberChange}
+        name={newName}
+        number={newNumber}
+      />
       <h3>Numbers</h3>
-      {filterPhonebook(newTerm).map(person => (
-        <Person key={person.name} person={person} />
-      ))}
+      <Persons persons={filterPhonebook(newTerm)} />
     </div>
   );
 };
