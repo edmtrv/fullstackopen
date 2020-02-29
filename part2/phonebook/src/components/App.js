@@ -20,9 +20,9 @@ const App = () => {
     return persons.some(person => person.name === input);
   };
 
-  const filterPhonebook = term => {
+  const filterPhonebook = () => {
     return persons.filter(person =>
-      person.name.toLowerCase().includes(term.toLowerCase())
+      person.name.toLowerCase().includes(newTerm.toLowerCase())
     );
   };
 
@@ -56,7 +56,7 @@ const App = () => {
         number={newNumber}
       />
       <h3>Numbers</h3>
-      <Persons persons={filterPhonebook(newTerm)} />
+      <Persons persons={filterPhonebook()} />
     </div>
   );
 };
