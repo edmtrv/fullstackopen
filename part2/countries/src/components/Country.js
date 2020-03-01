@@ -1,6 +1,15 @@
 import React from 'react';
+import Weather from './Weather';
 
-const Country = ({ country }) => {
+const Country = ({ country, weather }) => {
+  const showWeather = () => {
+    if (!weather) {
+      return <div>Loading weather data...</div>;
+    } else {
+      return <Weather data={weather} />;
+    }
+  };
+
   return (
     <div>
       <h1>{country.name}</h1>
@@ -17,6 +26,7 @@ const Country = ({ country }) => {
         alt={`${country.name} flag`}
         style={{ width: '100px', height: 'auto' }}
       />
+      {showWeather()}
     </div>
   );
 };

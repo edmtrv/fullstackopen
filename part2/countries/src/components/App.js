@@ -3,9 +3,12 @@ import axios from 'axios';
 import Search from './Search';
 import Country from './Country';
 
+const API_KEY = process.env.REACT_APP_API_KEY;
+
 const App = () => {
   const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [country, setCountry] = useState(null);
+  const [weather, setWeather] = useState(null);
   const [term, setTerm] = useState('');
 
   useEffect(() => {
@@ -14,12 +17,22 @@ const App = () => {
       .then(response => setCountries(response.data));
   }, []);
 
+  useEffect(() => {
+    if (country) {
+      axios
+        .get(
+          `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${country.capital}`
+        )
+        .then(response => setWeather(response.data));
+    }
+  }, [country]);
+
   const onTermChange = e => {
+    setCountry(null);
     setTerm(e.target.value);
-    setSelectedCountry(null);
   };
 
-  const onCountrySelect = country => setSelectedCountry(country);
+  const onCountrySelect = country => setCountry(country);
 
   const filterCountries = () => {
     const newCountries = countries.filter(country =>
@@ -27,15 +40,15 @@ const App = () => {
     );
 
     if (newCountries.length === 1) {
-      setSelectedCountry(newCountries[0]);
+      setCountry(newCountries[0]);
     }
 
     return newCountries;
   };
 
   const showDetails = () => {
-    if (selectedCountry) {
-      return <Country country={selectedCountry} />;
+    if (country) {
+      return <Country country={country} weather={weather} />;
     }
 
     const countries = filterCountries();
