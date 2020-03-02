@@ -28,6 +28,14 @@ const App = () => {
     setNewNumber('');
   };
 
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      phonebook.deletePerson(id).then(() => {
+        setPersons(persons.filter(p => p.id !== id));
+      });
+    }
+  };
+
   const checkPersonExists = input => {
     return persons.some(person => person.name === input);
   };
@@ -55,7 +63,7 @@ const App = () => {
         number={newNumber}
       />
       <h3>Numbers</h3>
-      <Persons persons={filterPhonebook()} />
+      <Persons persons={filterPhonebook()} onPersonDelete={deletePerson} />
     </div>
   );
 };
