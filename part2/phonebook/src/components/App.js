@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Form from './Form';
 import Persons from './Persons';
 import Filter from './Filter';
+import Notification from './Notification';
 import phonebook from '../services/phonebook';
 
 const App = () => {
@@ -9,6 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [newTerm, setNewTerm] = useState('');
+  const [message, setMessage] = useState(null);
+  const [type, setType] = useState('');
 
   useEffect(() => {
     phonebook.getAll().then(data => setPersons(data));
@@ -33,7 +36,10 @@ const App = () => {
 
   const addPerson = () => {
     const newPerson = { name: newName, number: newNumber };
-    phonebook.create(newPerson).then(data => setPersons(persons.concat(data)));
+    phonebook.create(newPerson).then(data => {
+      setPersons(persons.concat(data));
+      showNotification(`Added ${newName}`);
+    });
   };
 
   const updatePerson = () => {
@@ -45,11 +51,10 @@ const App = () => {
       const person = persons.find(p => p.name === newName);
       const updatedPerson = { ...person, number: newNumber };
 
-      phonebook
-        .updatePerson(person.id, updatedPerson)
-        .then(data =>
-          setPersons(persons.map(p => (p.id !== person.id ? p : data)))
-        );
+      phonebook.updatePerson(person.id, updatedPerson).then(data => {
+        setPersons(persons.map(p => (p.id !== person.id ? p : data)));
+        showNotification(`Updated number for ${newName}`);
+      });
     }
   };
 
@@ -71,9 +76,19 @@ const App = () => {
     );
   };
 
+  const showNotification = (message, type = 'success') => {
+    setMessage(message);
+    setType(type);
+    setTimeout(() => {
+      setMessage(null);
+      setType('');
+    }, 5000);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} type={type} />
       <Filter onTermChange={onTermChange} term={newTerm} />
       <h3>Add New</h3>
       <Form
