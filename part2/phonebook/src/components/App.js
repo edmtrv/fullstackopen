@@ -51,10 +51,18 @@ const App = () => {
       const person = persons.find(p => p.name === newName);
       const updatedPerson = { ...person, number: newNumber };
 
-      phonebook.updatePerson(person.id, updatedPerson).then(data => {
-        setPersons(persons.map(p => (p.id !== person.id ? p : data)));
-        showNotification(`Updated number for ${newName}`);
-      });
+      phonebook
+        .updatePerson(person.id, updatedPerson)
+        .then(data => {
+          setPersons(persons.map(p => (p.id !== person.id ? p : data)));
+          showNotification(`Updated number for ${newName}`);
+        })
+        .catch(() => {
+          showNotification(
+            `Information of ${newName} has already been removed from server`,
+            'error'
+          );
+        });
     }
   };
 
