@@ -36,10 +36,15 @@ const App = () => {
 
   const addPerson = () => {
     const newPerson = { name: newName, number: newNumber };
-    phonebook.create(newPerson).then(data => {
-      setPersons(persons.concat(data));
-      showNotification(`Added ${newName}`);
-    });
+    phonebook
+      .create(newPerson)
+      .then(data => {
+        setPersons(persons.concat(data));
+        showNotification(`Added ${newName}`);
+      })
+      .catch(err => {
+        showNotification(err.response.data.error.message);
+      });
   };
 
   const updatePerson = () => {
