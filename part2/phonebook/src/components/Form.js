@@ -1,8 +1,13 @@
 import React from 'react';
 
-const Form = props => {
+const Form = (props) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    props.onNewData();
+  };
+
   return (
-    <form onSubmit={props.onFormSubmit}>
+    <form onSubmit={handleSubmit}>
       <div>
         Name: <input onChange={props.onNameChange} value={props.name} />
       </div>

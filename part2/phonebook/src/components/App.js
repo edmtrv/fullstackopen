@@ -14,16 +14,14 @@ const App = () => {
   const [type, setType] = useState('');
 
   useEffect(() => {
-    phonebook.getAll().then(data => setPersons(data));
+    phonebook.getAll().then((data) => setPersons(data));
   }, []);
 
-  const onNameChange = e => setNewName(e.target.value);
-  const onNumberChange = e => setNewNumber(e.target.value);
-  const onTermChange = e => setNewTerm(e.target.value);
+  const onNameChange = (e) => setNewName(e.target.value);
+  const onNumberChange = (e) => setNewNumber(e.target.value);
+  const onTermChange = (e) => setNewTerm(e.target.value);
 
-  const onFormSubmit = e => {
-    e.preventDefault();
-
+  const onNewData = () => {
     if (checkPersonExists(newName)) {
       updatePerson();
     } else {
@@ -38,11 +36,11 @@ const App = () => {
     const newPerson = { name: newName, number: newNumber };
     phonebook
       .create(newPerson)
-      .then(data => {
+      .then((data) => {
         setPersons(persons.concat(data));
         showNotification(`Added ${newName}`);
       })
-      .catch(err => {
+      .catch((err) => {
         showNotification(err.response.data.error.message);
       });
   };
@@ -53,13 +51,13 @@ const App = () => {
         `${newName} is already added to the phonebook. Replace the old number with a new one?`
       )
     ) {
-      const person = persons.find(p => p.name === newName);
+      const person = persons.find((p) => p.name === newName);
       const updatedPerson = { ...person, number: newNumber };
 
       phonebook
         .updatePerson(person.id, updatedPerson)
-        .then(data => {
-          setPersons(persons.map(p => (p.id !== person.id ? p : data)));
+        .then((data) => {
+          setPersons(persons.map((p) => (p.id !== person.id ? p : data)));
           showNotification(`Updated number for ${newName}`);
         })
         .catch(() => {
@@ -74,17 +72,17 @@ const App = () => {
   const deletePerson = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       phonebook.deletePerson(id).then(() => {
-        setPersons(persons.filter(p => p.id !== id));
+        setPersons(persons.filter((p) => p.id !== id));
       });
     }
   };
 
-  const checkPersonExists = input => {
-    return persons.some(person => person.name === input);
+  const checkPersonExists = (input) => {
+    return persons.some((person) => person.name === input);
   };
 
   const filterPhonebook = () => {
-    return persons.filter(person =>
+    return persons.filter((person) =>
       person.name.toLowerCase().includes(newTerm.toLowerCase())
     );
   };
@@ -105,7 +103,7 @@ const App = () => {
       <Filter onTermChange={onTermChange} term={newTerm} />
       <h3>Add New</h3>
       <Form
-        onFormSubmit={onFormSubmit}
+        onNewData={onNewData}
         onNameChange={onNameChange}
         onNumberChange={onNumberChange}
         name={newName}
