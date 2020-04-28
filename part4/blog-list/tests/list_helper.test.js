@@ -107,6 +107,7 @@ describe('favorite blog', () => {
       author: 'Edsger W. Dijkstra',
       likes: 5,
     };
+
     expect(result).toEqual(value);
   });
 
@@ -119,5 +120,31 @@ describe('favorite blog', () => {
     };
 
     expect(result).toEqual(value);
+  });
+});
+
+describe('most blogs', () => {
+  test('of an empty list is an empty object', () => {
+    const result = listHelper.mostBlogs([]);
+
+    expect(result).toEqual({});
+  });
+
+  test('when the list has one blog equals to the author of it', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog);
+
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 1 });
+  });
+
+  test('of a bigger list has the correct author', () => {
+    const result = listHelper.mostBlogs(blogs);
+
+    expect(result).toMatchObject({ author: 'Robert C. Martin' });
+  });
+
+  test('of a bigger list has the correct count of blogs', () => {
+    const result = listHelper.mostBlogs(blogs);
+
+    expect(result).toMatchObject({ blogs: 3 });
   });
 });
