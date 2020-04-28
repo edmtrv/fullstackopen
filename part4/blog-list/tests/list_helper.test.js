@@ -136,15 +136,41 @@ describe('most blogs', () => {
     expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 1 });
   });
 
-  test('of a bigger list has the correct author', () => {
+  test('of a bigger list returns the correct author', () => {
     const result = listHelper.mostBlogs(blogs);
 
     expect(result).toMatchObject({ author: 'Robert C. Martin' });
   });
 
-  test('of a bigger list has the correct count of blogs', () => {
+  test('of a bigger list returns the correct count of blogs', () => {
     const result = listHelper.mostBlogs(blogs);
 
     expect(result).toMatchObject({ blogs: 3 });
+  });
+});
+
+describe('most likes', () => {
+  test('of an empty list is an empty object', () => {
+    const result = listHelper.mostLikes([]);
+
+    expect(result).toEqual({});
+  });
+
+  test('when the list has one blog equals the author of it', () => {
+    const result = listHelper.mostLikes(listWithOneBlog);
+
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 5 });
+  });
+
+  test('of a bigger list returns the correct author', () => {
+    const result = listHelper.mostLikes(blogs);
+
+    expect(result).toMatchObject({ author: 'Edsger W. Dijkstra' });
+  });
+
+  test('of a bigger list returns the correct amount of likes', () => {
+    const result = listHelper.mostLikes(blogs);
+
+    expect(result).toMatchObject({ likes: 17 });
   });
 });
