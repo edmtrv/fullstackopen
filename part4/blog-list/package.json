@@ -4,8 +4,8 @@
   "description": "Blog list application, part of the exercises for Fullstackopen",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "test": "jest --verbose"
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "author": "Emil Dimitrov",
   "license": "ISC",
@@ -19,7 +19,8 @@
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^25.4.0",
     "nodemon": "^2.0.3",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "cors": "^2.8.5",
