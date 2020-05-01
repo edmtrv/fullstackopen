@@ -72,6 +72,18 @@ test('likes property has a default value of 0', async () => {
   expect(response.body.likes).toBe(0);
 });
 
+test('title and url properites are required', async () => {
+  const newBlog = {
+    author: 'Dan Abramov',
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
