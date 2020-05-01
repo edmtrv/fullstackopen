@@ -33,6 +33,29 @@ test('unique identifier of blogs is named id', async () => {
   expect(response.body[0].id).toBeDefined();
 });
 
+test('new blog post can be created', async () => {
+  const newBlog = {
+    title: 'Goodbye, Clean Code',
+    author: 'Dan Abramov',
+    url: 'https://overreacted.io/goodbye-clean-code/',
+    likes: 0,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const titles = blogsAtEnd.map((b) => b.title);
+
+  expect(titles).toContain('Goodbye, Clean Code');
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
