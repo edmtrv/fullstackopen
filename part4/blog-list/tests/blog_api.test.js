@@ -14,74 +14,119 @@ beforeEach(async () => {
   await Promise.all(promises);
 });
 
-test('it returns blogs as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+describe('when viewing a list of blogs', () => {
+  test('it returns blogs as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('it returns all blogs', async () => {
+    const response = await api.get('/api/blogs');
+
+    expect(response.body).toHaveLength(helper.initialBlogs.length);
+  });
+
+  test('unique identifier of blogs is named id', async () => {
+    const response = await api.get('/api/blogs');
+
+    expect(response.body[0].id).toBeDefined();
+  });
 });
 
-test('it returns all blogs', async () => {
-  const response = await api.get('/api/blogs');
+describe('blog post creation', () => {
+  test('succeeds with valid data', async () => {
+    const newBlog = {
+      title: 'Goodbye, Clean Code',
+      author: 'Dan Abramov',
+      url: 'https://overreacted.io/goodbye-clean-code/',
+      likes: 0,
+    };
 
-  expect(response.body).toHaveLength(helper.initialBlogs.length);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+    const titles = blogsAtEnd.map((b) => b.title);
+
+    expect(titles).toContain('Goodbye, Clean Code');
+  });
 });
 
-test('unique identifier of blogs is named id', async () => {
-  const response = await api.get('/api/blogs');
+describe('correct handling of properties', () => {
+  test('likes property has a default value of 0', async () => {
+    const newBlog = {
+      title: 'Goodbye, Clean Code',
+      author: 'Dan Abramov',
+      url: 'https://overreacted.io/goodbye-clean-code/',
+    };
 
-  expect(response.body[0].id).toBeDefined();
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.likes).toBe(0);
+  });
+
+  test('title and url properites are required', async () => {
+    const newBlog = {
+      author: 'Dan Abramov',
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(400);
+
+    const blogsAtEnd = await helper.blogsInDb();
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
 });
 
-test('new blog post can be created', async () => {
-  const newBlog = {
-    title: 'Goodbye, Clean Code',
-    author: 'Dan Abramov',
-    url: 'https://overreacted.io/goodbye-clean-code/',
-    likes: 0,
-  };
+describe('deletion of a blog entry', () => {
+  test('succeedes with status code 204 if valid id', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
-  const blogsAtEnd = await helper.blogsInDb();
+    const blogsAtEnd = await helper.blogsInDb();
 
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
 
-  const titles = blogsAtEnd.map((b) => b.title);
+    const titles = blogsAtEnd.map((b) => b.title);
 
-  expect(titles).toContain('Goodbye, Clean Code');
+    expect(titles).not.toContain(blogToDelete.title);
+  });
 });
 
-test('likes property has a default value of 0', async () => {
-  const newBlog = {
-    title: 'Goodbye, Clean Code',
-    author: 'Dan Abramov',
-    url: 'https://overreacted.io/goodbye-clean-code/',
-  };
+describe('update of blog information', () => {
+  test('succeeds changing the amount of likes for a blog', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
 
-  const response = await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
+    const updatedLikes = {
+      likes: 8,
+    };
 
-  expect(response.body.likes).toBe(0);
-});
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedLikes)
+      .expect(200);
 
-test('title and url properites are required', async () => {
-  const newBlog = {
-    author: 'Dan Abramov',
-  };
+    const blogsAtEnd = await helper.blogsInDb();
+    const updatedBlog = blogsAtEnd[0];
 
-  await api.post('/api/blogs').send(newBlog).expect(400);
-
-  const blogsAtEnd = await helper.blogsInDb();
-
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+    expect(updatedBlog.likes).toEqual(8);
+    expect(updatedBlog.likes).not.toEqual(blogToUpdate.likes);
+  });
 });
 
 afterAll(() => {
