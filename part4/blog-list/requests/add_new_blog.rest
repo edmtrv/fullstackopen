@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVtaWwiLCJpZCI6IjVlYjU3ZDZjODk1YWJiNGM3NmI0YjI4YiIsImlhdCI6MTU4OTA1Nzg0MX0.xWeNwEoNOY71e9YB97XEWIsZaalefJhpsUPGAXqMOpc
 
 {
-  "author": "Dan Abramov",
-  "title": "Overreacted",
-  "url": "https://overreacted.io/"
+  "author": "Robert C. Martin",
+  "title": "The Clean Coder",
+  "url": "https://blog.cleancoder.com/"
 }
