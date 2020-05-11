@@ -1,17 +1,35 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const helper = require('./test_helper');
 const app = require('../app');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
 const api = supertest(app);
+let token;
 
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
 
-  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+  const passwordHash = await bcrypt.hash('asd', 10);
+  const user = new User({ username: 'newuser', passwordHash });
+
+  await user.save();
+
+  const createToken = {
+    username: user.username,
+    id: user.id,
+  };
+
+  token = jwt.sign(createToken, process.env.SECRET);
+
+  const blogObjects = helper.initialBlogs.map(
+    (blog) => new Blog({ ...blog, user: user._id })
+  );
+
   const promises = blogObjects.map((blog) => blog.save());
   await Promise.all(promises);
 });
@@ -48,6 +66,7 @@ describe('blog post creation', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -59,6 +78,21 @@ describe('blog post creation', () => {
     const titles = blogsAtEnd.map((b) => b.title);
 
     expect(titles).toContain('Goodbye, Clean Code');
+  });
+
+  test('fails with 401 status code if not provided a valid token', async () => {
+    const newBlog = {
+      title: 'Goodbye, Clean Code',
+      author: 'Dan Abramov',
+      url: 'https://overreacted.io/goodbye-clean-code/',
+      likes: 0,
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
   });
 });
 
@@ -73,6 +107,7 @@ describe('correct handling of properties', () => {
     const response = await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -84,7 +119,11 @@ describe('correct handling of properties', () => {
       author: 'Dan Abramov',
     };
 
-    await api.post('/api/blogs').send(newBlog).expect(400);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
 
     const blogsAtEnd = await helper.blogsInDb();
 
@@ -97,7 +136,10 @@ describe('deletion of a blog entry', () => {
     const blogsAtStart = await helper.blogsInDb();
     const blogToDelete = blogsAtStart[0];
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
 
@@ -132,15 +174,6 @@ describe('update of blog information', () => {
 });
 
 describe('when there is initially one user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({});
-
-    const passwordHash = await bcrypt.hash('pass', 10);
-    const user = new User({ username: 'root', passwordHash });
-
-    await user.save();
-  });
-
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb();
 
@@ -169,7 +202,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb();
 
     const newUser = {
-      username: 'root',
+      username: 'newuser',
       name: 'Superuser',
       password: 'asd',
     };
