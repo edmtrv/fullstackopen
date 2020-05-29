@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
+import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -13,6 +14,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -43,7 +45,9 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (err) {
-      console.log(err);
+      setNotification({ message: err.response.data.error, type: 'error' });
+
+      setTimeout(() => setNotification(null), 5000);
     }
   };
 
@@ -79,9 +83,17 @@ const App = () => {
       setBlogs(blogs.concat(createdBlog));
       setTitle('');
       setAuthor('');
+      setNotification({
+        message: 'Succesfully added new blog',
+        type: 'success',
+      });
+
+      setTimeout(() => setNotification(null), 5000);
       setUrl('');
     } catch (err) {
-      console.log(err);
+      setNotification({ message: err.response.data.error, type: 'error' });
+
+      setTimeout(() => setNotification(null), 5000);
     }
   };
 
@@ -96,11 +108,17 @@ const App = () => {
   };
 
   if (user === null) {
-    return <LoginForm {...loginFormProps} />;
+    return (
+      <div>
+        {notification && <Notification {...notification} />}
+        <LoginForm {...loginFormProps} />
+      </div>
+    );
   } else {
     return (
       <div>
         <h2>Blogs</h2>
+        {notification && <Notification {...notification} />}
         <p>
           {user.name} logged in<button onClick={handleLogout}>Logout</button>
         </p>
