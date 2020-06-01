@@ -9,12 +9,7 @@ import loginService from './services/login';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
@@ -30,34 +25,19 @@ const App = () => {
     }
   }, []);
 
-  const handleUsername = ({ target }) => setUsername(target.value);
-  const handlePassword = ({ target }) => setPassword(target.value);
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async (loginDetails) => {
     try {
-      const user = await loginService.login({ username, password });
+      const user = await loginService.login(loginDetails);
 
       window.localStorage.setItem('loggedInUser', JSON.stringify(user));
 
       setUser(user);
       blogService.setToken(user.token);
-      setUsername('');
-      setPassword('');
     } catch (err) {
       setNotification({ message: err.response.data.error, type: 'error' });
 
       setTimeout(() => setNotification(null), 5000);
     }
-  };
-
-  const loginFormProps = {
-    username,
-    password,
-    handleUsername,
-    handlePassword,
-    handleLogin,
   };
 
   const handleLogout = () => {
@@ -65,32 +45,17 @@ const App = () => {
     setUser(null);
   };
 
-  const handleTitle = ({ target }) => setTitle(target.value);
-  const handleAuthor = ({ target }) => setAuthor(target.value);
-  const handleUrl = ({ target }) => setUrl(target.value);
-
-  const handleAddBlog = async (e) => {
-    e.preventDefault();
-
-    const newBlog = {
-      title,
-      author,
-      url,
-    };
-
+  const handleAddBlog = async (blogData) => {
     try {
-      const createdBlog = await blogService.create(newBlog);
+      const createdBlog = await blogService.create(blogData);
 
       setBlogs(blogs.concat(createdBlog));
-      setTitle('');
-      setAuthor('');
       setNotification({
         message: 'Succesfully added new blog',
         type: 'success',
       });
 
       setTimeout(() => setNotification(null), 5000);
-      setUrl('');
     } catch (err) {
       setNotification({ message: err.response.data.error, type: 'error' });
 
@@ -98,21 +63,11 @@ const App = () => {
     }
   };
 
-  const blogFormProps = {
-    handleAddBlog,
-    handleTitle,
-    handleAuthor,
-    handleUrl,
-    title,
-    author,
-    url,
-  };
-
   if (user === null) {
     return (
       <div>
         {notification && <Notification {...notification} />}
-        <LoginForm {...loginFormProps} />
+        <LoginForm userLogin={handleLogin} />
       </div>
     );
   } else {
@@ -125,7 +80,7 @@ const App = () => {
         </p>
 
         <Togglable btnLabel="New Note">
-          <BlogForm {...blogFormProps} />
+          <BlogForm addBlog={handleAddBlog} />
         </Togglable>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />

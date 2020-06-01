@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const BlogForm = (props) => {
+const BlogForm = ({ addBlog }) => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+
+    addBlog({ title, author, url });
+
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
+
   return (
     <div>
       <h2>Create New</h2>
-      <form onSubmit={props.handleAddBlog}>
+      <form onSubmit={onFormSubmit}>
         <div>
           <label htmlFor="title">Title</label>
           <input
             type="text"
             id="title"
-            onChange={props.handleTitle}
-            value={props.title}
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
@@ -19,8 +33,8 @@ const BlogForm = (props) => {
           <input
             type="text"
             id="author"
-            onChange={props.handleAuthor}
-            value={props.author}
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
           />
         </div>
         <div>
@@ -28,8 +42,8 @@ const BlogForm = (props) => {
           <input
             type="text"
             id="url"
-            onChange={props.handleUrl}
-            value={props.url}
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
           />
         </div>
         <button type="submit">Create</button>
