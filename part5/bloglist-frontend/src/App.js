@@ -63,6 +63,20 @@ const App = () => {
     }
   };
 
+  const handleAddLike = async (blog) => {
+    const newLikes = blog.likes + 1;
+    const newBlog = { ...blog, likes: newLikes };
+    try {
+      const updatedBlog = await blogService.update(newBlog, blog.id);
+
+      setBlogs(blogs.map((b) => (updatedBlog.id !== b.id ? b : updatedBlog)));
+    } catch (err) {
+      setNotification({ message: 'Something went wrong', type: 'error' });
+
+      setTimeout(() => setNotification(null), 5000);
+    }
+  };
+
   if (user === null) {
     return (
       <div>
@@ -83,7 +97,12 @@ const App = () => {
           <BlogForm addBlog={handleAddBlog} />
         </Togglable>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} name={user.name} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            name={user.name}
+            addLike={handleAddLike}
+          />
         ))}
       </div>
     );
