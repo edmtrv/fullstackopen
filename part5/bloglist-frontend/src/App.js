@@ -83,6 +83,22 @@ const App = () => {
     }
   };
 
+  const handleRemoveBlog = async (id) => {
+    try {
+      await blogService.remove(id);
+
+      setBlogs(blogs.filter((b) => b.id !== id));
+
+      setNotification({ message: 'Removed successfully', type: 'success' });
+
+      setTimeout(() => setNotification(null), 5000);
+    } catch (err) {
+      setNotification({ message: err.response.data.error, type: 'error' });
+
+      setTimeout(() => setNotification(null), 5000);
+    }
+  };
+
   if (user === null) {
     return (
       <div>
@@ -99,15 +115,16 @@ const App = () => {
           {user.name} logged in<button onClick={handleLogout}>Logout</button>
         </p>
 
-        <Togglable btnLabel="New Blog">
+        <Togglable buttonLabel="New Blog">
           <BlogForm addBlog={handleAddBlog} />
         </Togglable>
         {blogs.map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
-            name={user.name}
+            user={user}
             addLike={handleAddLike}
+            removeBlog={handleRemoveBlog}
           />
         ))}
       </div>
