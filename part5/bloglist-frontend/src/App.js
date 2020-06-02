@@ -79,11 +79,11 @@ const App = () => {
           {user.name} logged in<button onClick={handleLogout}>Logout</button>
         </p>
 
-        <Togglable btnLabel="New Note">
+        <Togglable btnLabel="New Blog">
           <BlogForm addBlog={handleAddBlog} />
         </Togglable>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} name={user.name} />
         ))}
       </div>
     );
