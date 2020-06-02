@@ -13,7 +13,9 @@ const App = () => {
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
   }, []);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const App = () => {
     try {
       const createdBlog = await blogService.create(blogData);
 
-      setBlogs(blogs.concat(createdBlog));
+      setBlogs(blogs.concat(createdBlog).sort((a, b) => b.likes - a.likes));
       setNotification({
         message: 'Succesfully added new blog',
         type: 'success',
@@ -69,7 +71,11 @@ const App = () => {
     try {
       const updatedBlog = await blogService.update(newBlog, blog.id);
 
-      setBlogs(blogs.map((b) => (updatedBlog.id !== b.id ? b : updatedBlog)));
+      const newBlogs = blogs
+        .map((b) => (updatedBlog.id !== b.id ? b : updatedBlog))
+        .sort((a, b) => b.likes - a.likes);
+
+      setBlogs(newBlogs);
     } catch (err) {
       setNotification({ message: 'Something went wrong', type: 'error' });
 
