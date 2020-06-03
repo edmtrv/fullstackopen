@@ -12,7 +12,7 @@
     "react-hooks/rules-of-hooks": "error",
     "no-console": "warn"
   },
-  "plugins": ["react", "import", "jsx-a11y", "react-hooks"],
+  "plugins": ["react", "import", "jsx-a11y", "react-hooks", "jest"],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
