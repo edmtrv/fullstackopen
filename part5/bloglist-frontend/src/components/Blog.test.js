@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import Blog from './Blog';
 
 describe('<Blog />', () => {
@@ -33,5 +33,14 @@ describe('<Blog />', () => {
     expect(div).toHaveTextContent('Test Blog');
     expect(div).toHaveTextContent('Test Author');
     expect(details).toHaveStyle('display: none');
+  });
+
+  test('on button click url and number of likes are shown', () => {
+    const button = component.getByText('View');
+    fireEvent.click(button);
+
+    const details = component.container.querySelector('.blog-details');
+
+    expect(details).not.toHaveStyle('display: none');
   });
 });
