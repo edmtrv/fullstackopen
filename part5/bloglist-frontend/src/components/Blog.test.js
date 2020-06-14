@@ -22,8 +22,10 @@ describe('<Blog />', () => {
     name: 'Emil',
   };
 
+  const mockHandler = jest.fn();
+
   beforeEach(() => {
-    component = render(<Blog blog={blog} user={user} />);
+    component = render(<Blog blog={blog} user={user} addLike={mockHandler} />);
   });
 
   test('by default renders author and title but not url and likes', () => {
@@ -42,5 +44,13 @@ describe('<Blog />', () => {
     const details = component.container.querySelector('.blog-details');
 
     expect(details).not.toHaveStyle('display: none');
+  });
+
+  test('likes increase when like button is clicked', () => {
+    const likeButton = component.getByText('Like');
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
+
+    expect(mockHandler.mock.calls).toHaveLength(2);
   });
 });
