@@ -6,9 +6,8 @@ const BlogDetails = ({ blog, user, display, addLike, removeBlog }) => {
       removeBlog(blog.id);
     }
   };
-
   return (
-    <div style={{ display }}>
+    <div className="blog-details" style={{ display }}>
       {blog.url}
       <br />
       Likes: {blog.likes} <button onClick={() => addLike(blog)}>Like</button>
