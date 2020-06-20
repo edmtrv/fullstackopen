@@ -6,14 +6,15 @@
     "plugin:jsx-a11y/recommended",
     "plugin:jest/recommended",
     "prettier",
-    "prettier/react"
+    "prettier/react",
+    "plugin:cypress/recommended"
   ],
   "rules": {
     "react/prop-types": 0,
     "react-hooks/rules-of-hooks": "error",
     "no-console": "warn"
   },
-  "plugins": ["react", "import", "jsx-a11y", "react-hooks", "jest"],
+  "plugins": ["react", "import", "jsx-a11y", "react-hooks", "jest", "cypress"],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
@@ -24,7 +25,8 @@
   "env": {
     "es6": true,
     "browser": true,
-    "node": true
+    "node": true,
+    "cypress/globals": true
   },
   "settings": {
     "react": {
