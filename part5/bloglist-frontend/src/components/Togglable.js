@@ -22,7 +22,7 @@ const Togglable = (props) => {
   );
 };
 
-Togglable.PropTypes = {
+Togglable.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
 };
 
