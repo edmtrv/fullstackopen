@@ -33,5 +33,13 @@ describe('Blog app', function () {
 
       cy.contains('Invalid username or password');
     });
+
+    it('shows an error notification on unsuccessful login', function () {
+      cy.get('input:first').type('emil');
+      cy.get('input:last').type('wrong');
+      cy.get('#login-button').click();
+
+      cy.get('.notification h2').should('have.css', 'color', 'rgb(255, 0, 0)');
+    });
   });
 });
