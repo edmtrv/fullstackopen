@@ -23,6 +23,7 @@ const App = () => {
 
     if (loggedInUser) {
       const user = JSON.parse(loggedInUser);
+      blogService.setToken(user.token);
       setUser(user);
     }
   }, []);
@@ -33,8 +34,8 @@ const App = () => {
 
       window.localStorage.setItem('loggedInUser', JSON.stringify(user));
 
-      setUser(user);
       blogService.setToken(user.token);
+      setUser(user);
     } catch (err) {
       setNotification({ message: err.response.data.error, type: 'error' });
 
@@ -53,7 +54,7 @@ const App = () => {
 
       setBlogs(blogs.concat(createdBlog).sort((a, b) => b.likes - a.likes));
       setNotification({
-        message: 'Succesfully added new blog',
+        message: 'Successfully added new blog',
         type: 'success',
       });
 

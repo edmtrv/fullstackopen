@@ -42,4 +42,21 @@ describe('Blog app', function () {
       cy.get('.notification h2').should('have.css', 'color', 'rgb(255, 0, 0)');
     });
   });
+
+  describe('when logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'emil', password: 'asd' });
+    });
+
+    it('can create a blog', function () {
+      cy.contains('New Blog').click();
+      cy.get('#title').type('Another Blog');
+      cy.get('#author').type('Author Name');
+      cy.get('#url').type('http://blogurl.com');
+
+      cy.get('#create-button').click();
+
+      cy.contains('Successfully added new blog');
+    });
+  });
 });
