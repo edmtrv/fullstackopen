@@ -1,3 +1,13 @@
+Cypress.Commands.add('register', ({ name, username, password }) => {
+  cy.request('POST', 'http://localhost:3001/api/users/', {
+    name,
+    username,
+    password,
+  });
+
+  cy.visit('http://localhost:3000');
+});
+
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.request('POST', 'http://localhost:3001/api/login', {
     username,
