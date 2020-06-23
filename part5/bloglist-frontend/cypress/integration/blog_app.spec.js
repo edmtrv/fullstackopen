@@ -58,5 +58,22 @@ describe('Blog app', function () {
 
       cy.contains('Successfully added new blog');
     });
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.addBlog({
+          title: 'Another Blog',
+          author: 'Blog Author',
+          url: 'http://blogurl.com',
+        });
+      });
+
+      it('user can like a blog', function () {
+        cy.contains('View').click();
+        cy.contains('Like').click();
+
+        cy.contains('Likes: 1');
+      });
+    });
   });
 });

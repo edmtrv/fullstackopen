@@ -10,8 +10,8 @@ Cypress.Commands.add('login', ({ username, password }) => {
 
 Cypress.Commands.add('addBlog', ({ title, author, url }) => {
   cy.request({
-    method: 'POST',
     url: 'http://localhost:3001/api/blogs',
+    method: 'POST',
     body: { title, author, url },
     headers: {
       Authorization: `bearer ${
