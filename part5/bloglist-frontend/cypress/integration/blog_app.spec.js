@@ -86,5 +86,56 @@ describe('Blog app', function () {
         cy.get('.blog').should('not.contain', 'Remove');
       });
     });
+
+    describe('and a few blogs exist', function () {
+      beforeEach(function () {
+        cy.addBlog({
+          title: 'First Blog',
+          author: 'Author 1',
+          url: 'http://blogone.com',
+        });
+        cy.addBlog({
+          title: 'Second Blog',
+          author: 'Author 2',
+          url: 'http://blogtwo.com',
+        });
+        cy.addBlog({
+          title: 'Third Blog',
+          author: 'Author 3',
+          url: 'http://blogthree.com',
+        });
+
+        cy.get('.blog')
+          .first()
+          .contains('View')
+          .click()
+          .parent()
+          .contains('Like')
+          .click()
+          .click();
+
+        cy.get('.blog')
+          .last()
+          .contains('View')
+          .click()
+          .parent()
+          .contains('Like')
+          .click()
+          .click()
+          .click()
+          .click();
+      });
+
+      it('are ordered by likes in descending order', function () {
+        cy.get('.blog-likes').should(($likes) => {
+          const counts = $likes.map((i, el) => {
+            return Cypress.$(el).text();
+          });
+
+          expect(+counts.get()[0]).to.be.gt(+counts.get()[1]);
+          expect(+counts.get()[1]).to.be.gt(+counts.get()[2]);
+        });
+      });
+    });
   });
 });

@@ -14,11 +14,11 @@ const Blog = ({ blog, user, addLike, removeBlog }) => {
   return (
     <div className="blog" style={blogStyles}>
       {blog.title} {blog.author}{' '}
-      <button onClick={() => setVisible(!visible)}>
+      <button onClick={() => setVisible((prevState) => !prevState)}>
         {visible ? 'Hide' : 'View'}
       </button>
       <BlogDetails
-        display={visible ? '' : 'none'}
+        display={visible ? 'block' : 'none'}
         blog={blog}
         user={user}
         addLike={addLike}
