@@ -1,9 +1,7 @@
-import React from 'react';
-
 const reducer = (state = null, action) => {
   switch (action.type) {
     case 'SHOW_NOTIFICATION':
-      return action.data.text;
+      return action.text;
     case 'HIDE_NOTIFICATION':
       return null;
     default:
@@ -14,7 +12,7 @@ const reducer = (state = null, action) => {
 export const showNotification = (text) => {
   return {
     type: 'SHOW_NOTIFICATION',
-    data: { text },
+    text,
   };
 };
 
