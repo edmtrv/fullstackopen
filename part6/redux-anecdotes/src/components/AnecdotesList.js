@@ -24,8 +24,8 @@ const AnecdoteList = () => {
     return anecdotes.filter((an) => an.content.toLowerCase().includes(filter));
   });
 
-  const vote = (id) => {
-    dispatch(addVote(id));
+  const vote = (anecdote) => {
+    dispatch(addVote(anecdote));
     dispatch(showNotification('Vote successfully added'));
     setTimeout(() => dispatch(hideNofitication()), 5000);
   };
@@ -38,7 +38,7 @@ const AnecdoteList = () => {
           <Anecdote
             key={anecdote.id}
             anecdote={anecdote}
-            handleClick={() => vote(anecdote.id)}
+            handleClick={() => vote(anecdote)}
           />
         ))}
     </div>
