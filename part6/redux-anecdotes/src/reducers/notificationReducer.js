@@ -9,16 +9,17 @@ const reducer = (state = null, action) => {
   }
 };
 
-export const showNotification = (text) => {
-  return {
-    type: 'SHOW_NOTIFICATION',
-    text,
-  };
-};
-
-export const hideNofitication = () => {
-  return {
-    type: 'HIDE_NOTIFICATION',
+export const setNotification = (text, time) => {
+  return async (dispatch) => {
+    dispatch({
+      type: 'SHOW_NOTIFICATION',
+      text,
+    });
+    setTimeout(() => {
+      dispatch({
+        type: 'HIDE_NOTIFICATION',
+      });
+    }, time * 1000);
   };
 };
 
