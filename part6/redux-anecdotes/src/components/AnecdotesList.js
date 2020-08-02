@@ -17,8 +17,8 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const AnecdoteList = (props) => {
   const vote = (anecdote) => {
-    dispatch(addVote(anecdote));
-    dispatch(setNotification('Vote successfully added', 5));
+    props.addVote(anecdote);
+    props.setNotification('Vote successfully added', 5);
   };
 
   return (
@@ -45,4 +45,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(AnecdoteList);
+export default connect(mapStateToProps, { addVote, setNotification })(
+  AnecdoteList
+);
