@@ -9,13 +9,17 @@ const reducer = (state = null, action) => {
   }
 };
 
+let timer;
+
 export const setNotification = (text, time) => {
   return async (dispatch) => {
+    clearTimeout(timer);
+    console.log(timer);
     dispatch({
       type: 'SHOW_NOTIFICATION',
       text,
     });
-    setTimeout(() => {
+    timer = setTimeout(() => {
       dispatch({
         type: 'HIDE_NOTIFICATION',
       });

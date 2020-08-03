@@ -18,7 +18,10 @@ const Anecdote = ({ anecdote, handleClick }) => {
 const AnecdoteList = (props) => {
   const vote = (anecdote) => {
     props.addVote(anecdote);
-    props.setNotification('Vote successfully added', 5);
+    props.setNotification(
+      `Vote successfully added for anecdote: '${anecdote.content}'`,
+      5
+    );
   };
 
   return (
