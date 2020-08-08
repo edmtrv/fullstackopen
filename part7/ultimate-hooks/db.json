@@ -1,0 +1,35 @@
+{
+  "notes": [
+    {
+      "content": "custom-hookit aivan mahtavia",
+      "id": 1
+    },
+    {
+      "content": "paras feature ikinä <3",
+      "id": 2
+    },
+    {
+      "content": "How do I replicate componentDidMount with useEffect",
+      "id": 3
+    },
+    {
+      "content": "How do I correctly fetch data inside useEffect? What is []?",
+      "id": 4
+    },
+    {
+      "content": "Do I need to specify functions as effect dependencies or not?",
+      "id": 5
+    },
+    {
+      "content": "Why do I sometimes get an infinite refetching loop?",
+      "id": 6
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    }
+  ]
+}
