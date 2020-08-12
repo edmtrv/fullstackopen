@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Notification = ({ message, type }) => {
-  const color = type === 'error' ? 'red' : 'green';
+const Notification = ({ notification, error }) => {
+  const color = error ? 'red' : 'green';
   return (
     <div className="notification" style={{ borderColor: color }}>
-      <h2 style={{ color }}>{message}</h2>
+      <h2 style={{ color }}>{notification}</h2>
     </div>
   );
 };

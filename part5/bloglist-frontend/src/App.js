@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setNotification } from './reducers/notificationReducer';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
@@ -10,7 +12,9 @@ import loginService from './services/login';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
+
+  const notification = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService
@@ -37,9 +41,7 @@ const App = () => {
       blogService.setToken(user.token);
       setUser(user);
     } catch (err) {
-      setNotification({ message: err.response.data.error, type: 'error' });
-
-      setTimeout(() => setNotification(null), 5000);
+      showNotification(err.response.data.error, true);
     }
   };
 
@@ -53,16 +55,14 @@ const App = () => {
       const createdBlog = await blogService.create(blogData);
 
       setBlogs(blogs.concat(createdBlog).sort((a, b) => b.likes - a.likes));
-      setNotification({
-        message: 'Successfully added new blog',
-        type: 'success',
-      });
+      // setNotification({
+      //   message: 'Successfully added new blog',
+      //   type: 'success',
+      // });
 
-      setTimeout(() => setNotification(null), 5000);
+      // setTimeout(() => setNotification(null), 5000);
     } catch (err) {
-      setNotification({ message: err.response.data.error, type: 'error' });
-
-      setTimeout(() => setNotification(null), 5000);
+      showNotification(err.response.data.error, true);
     }
   };
 
@@ -78,9 +78,7 @@ const App = () => {
 
       setBlogs(newBlogs);
     } catch (err) {
-      setNotification({ message: 'Something went wrong', type: 'error' });
-
-      setTimeout(() => setNotification(null), 5000);
+      showNotification(err.response.data.error, true);
     }
   };
 
@@ -90,14 +88,18 @@ const App = () => {
 
       setBlogs(blogs.filter((b) => b.id !== id));
 
-      setNotification({ message: 'Removed successfully', type: 'success' });
+      // setNotification({ message: 'Removed successfully', type: 'success' });
 
-      setTimeout(() => setNotification(null), 5000);
+      // setTimeout(() => setNotification(null), 5000);
     } catch (err) {
-      setNotification({ message: err.response.data.error, type: 'error' });
-
-      setTimeout(() => setNotification(null), 5000);
+      showNotification(err.response.data.error, true);
     }
+  };
+
+  const showNotification = (message, error = false) => {
+    dispatch(setNotification(message, error));
+
+    setTimeout(() => dispatch(setNotification(null)), 5000);
   };
 
   if (user === null) {
