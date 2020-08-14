@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { initializeBlogs } from './reducers/blogReducer';
 import { setNotification } from './reducers/notificationReducer';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
@@ -10,16 +11,15 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
-  const notification = useSelector((state) => state);
+  const notification = useSelector((state) => state.notification);
+  const blogs = useSelector((state) => state.blogs);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
+    blogService.getAll().then((blogs) => dispatch(initializeBlogs(blogs)));
   }, []);
 
   useEffect(() => {
@@ -54,7 +54,9 @@ const App = () => {
     try {
       const createdBlog = await blogService.create(blogData);
 
-      setBlogs(blogs.concat(createdBlog).sort((a, b) => b.likes - a.likes));
+      dispatch({ type: 'NEW_BLOG', data: createdBlog });
+
+      // setBlogs(blogs.concat(createdBlog).sort((a, b) => b.likes - a.likes));
       // setNotification({
       //   message: 'Successfully added new blog',
       //   type: 'success',
@@ -76,7 +78,7 @@ const App = () => {
         .map((b) => (updatedBlog.id !== b.id ? b : updatedBlog))
         .sort((a, b) => b.likes - a.likes);
 
-      setBlogs(newBlogs);
+      // setBlogs(newBlogs);
     } catch (err) {
       showNotification(err.response.data.error, true);
     }
@@ -86,7 +88,7 @@ const App = () => {
     try {
       await blogService.remove(id);
 
-      setBlogs(blogs.filter((b) => b.id !== id));
+      // setBlogs(blogs.filter((b) => b.id !== id));
 
       // setNotification({ message: 'Removed successfully', type: 'success' });
 
