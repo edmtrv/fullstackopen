@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializeBlogs } from './reducers/blogReducer';
+import {
+  initializeBlogs,
+  createBlog,
+  likeBlog,
+  removeBlog,
+} from './reducers/blogReducer';
 import { setNotification } from './reducers/notificationReducer';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
@@ -15,12 +20,15 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   const notification = useSelector((state) => state.notification);
-  const blogs = useSelector((state) => state.blogs);
+  const blogs = useSelector((state) =>
+    state.blogs.sort((a, b) => b.likes - a.likes)
+  );
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => dispatch(initializeBlogs(blogs)));
-  }, []);
+    dispatch(initializeBlogs());
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem('loggedInUser');
@@ -50,35 +58,18 @@ const App = () => {
     setUser(null);
   };
 
-  const handleAddBlog = async (blogData) => {
+  const handleAddBlog = (blogData) => {
     try {
-      const createdBlog = await blogService.create(blogData);
-
-      dispatch({ type: 'NEW_BLOG', data: createdBlog });
-
-      // setBlogs(blogs.concat(createdBlog).sort((a, b) => b.likes - a.likes));
-      // setNotification({
-      //   message: 'Successfully added new blog',
-      //   type: 'success',
-      // });
-
-      // setTimeout(() => setNotification(null), 5000);
+      dispatch(createBlog(blogData));
+      showNotification('Successfully added new blog');
     } catch (err) {
       showNotification(err.response.data.error, true);
     }
   };
 
   const handleAddLike = async (blog) => {
-    const newLikes = blog.likes + 1;
-    const newBlog = { ...blog, likes: newLikes };
     try {
-      const updatedBlog = await blogService.update(newBlog, blog.id);
-
-      const newBlogs = blogs
-        .map((b) => (updatedBlog.id !== b.id ? b : updatedBlog))
-        .sort((a, b) => b.likes - a.likes);
-
-      // setBlogs(newBlogs);
+      dispatch(likeBlog(blog));
     } catch (err) {
       showNotification(err.response.data.error, true);
     }
@@ -86,13 +77,9 @@ const App = () => {
 
   const handleRemoveBlog = async (id) => {
     try {
-      await blogService.remove(id);
+      dispatch(removeBlog(id));
 
-      // setBlogs(blogs.filter((b) => b.id !== id));
-
-      // setNotification({ message: 'Removed successfully', type: 'success' });
-
-      // setTimeout(() => setNotification(null), 5000);
+      showNotification('Removed successfully');
     } catch (err) {
       showNotification(err.response.data.error, true);
     }
