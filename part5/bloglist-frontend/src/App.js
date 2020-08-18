@@ -7,22 +7,19 @@ import {
   removeBlog,
 } from './reducers/blogReducer';
 import { setNotification } from './reducers/notificationReducer';
+import { initializeUser, loginUser, logoutUser } from './reducers/userReducer';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
-import blogService from './services/blogs';
-import loginService from './services/login';
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-
   const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) =>
     state.blogs.sort((a, b) => b.likes - a.likes)
   );
+  const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
@@ -32,30 +29,17 @@ const App = () => {
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem('loggedInUser');
-
     if (loggedInUser) {
-      const user = JSON.parse(loggedInUser);
-      blogService.setToken(user.token);
-      setUser(user);
+      dispatch(initializeUser(loggedInUser));
     }
-  }, []);
+  }, [dispatch]);
 
-  const handleLogin = async (loginDetails) => {
-    try {
-      const user = await loginService.login(loginDetails);
-
-      window.localStorage.setItem('loggedInUser', JSON.stringify(user));
-
-      blogService.setToken(user.token);
-      setUser(user);
-    } catch (err) {
-      showNotification(err.response.data.error, true);
-    }
+  const handleLogin = (loginDetails) => {
+    dispatch(loginUser(loginDetails));
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedInUser');
-    setUser(null);
+    dispatch(logoutUser());
   };
 
   const handleAddBlog = (blogData) => {
@@ -87,8 +71,6 @@ const App = () => {
 
   const showNotification = (message, error = false) => {
     dispatch(setNotification(message, error));
-
-    setTimeout(() => dispatch(setNotification(null)), 5000);
   };
 
   if (user === null) {
