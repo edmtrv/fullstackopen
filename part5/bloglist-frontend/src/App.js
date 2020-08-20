@@ -1,83 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   initializeBlogs,
-  createBlog,
   likeBlog,
   removeBlog,
+  createBlog,
 } from './reducers/blogReducer';
-import { setNotification } from './reducers/notificationReducer';
-import { initializeUser, loginUser, logoutUser } from './reducers/userReducer';
-import Blog from './components/Blog';
-import BlogForm from './components/BlogForm';
-import LoginForm from './components/LoginForm';
+import { initializeUser, logoutUser, loginUser } from './reducers/loginReducer';
+import { initUsers } from './reducers/userReducer';
 import Notification from './components/Notification';
-import Togglable from './components/Togglable';
+import LoginForm from './components/LoginForm';
+import BlogList from './components/BlogList';
+import Users from './components/Users';
 
 const App = () => {
-  const notification = useSelector((state) => state.notification);
-  const blogs = useSelector((state) =>
-    state.blogs.sort((a, b) => b.likes - a.likes)
-  );
-  const user = useSelector((state) => state.user);
-
+  const { notification, login, blogs, users } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(initializeBlogs());
-  }, [dispatch]);
+    dispatch(initUsers());
 
-  useEffect(() => {
     const loggedInUser = window.localStorage.getItem('loggedInUser');
     if (loggedInUser) {
       dispatch(initializeUser(loggedInUser));
     }
   }, [dispatch]);
 
-  const handleLogin = (loginDetails) => {
-    dispatch(loginUser(loginDetails));
+  const handleCreateBlog = (blogDetails) => {
+    dispatch(createBlog(blogDetails));
   };
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
+  const addLike = (blog) => {
+    dispatch(likeBlog(blog));
   };
 
-  const handleAddBlog = (blogData) => {
-    try {
-      dispatch(createBlog(blogData));
-      showNotification('Successfully added new blog');
-    } catch (err) {
-      showNotification(err.response.data.error, true);
-    }
+  const deleteBlog = (id) => {
+    dispatch(removeBlog(id));
   };
 
-  const handleAddLike = async (blog) => {
-    try {
-      dispatch(likeBlog(blog));
-    } catch (err) {
-      showNotification(err.response.data.error, true);
-    }
+  const handleUserLogin = (credetials) => {
+    dispatch(loginUser(credetials));
   };
 
-  const handleRemoveBlog = async (id) => {
-    try {
-      dispatch(removeBlog(id));
-
-      showNotification('Removed successfully');
-    } catch (err) {
-      showNotification(err.response.data.error, true);
-    }
-  };
-
-  const showNotification = (message, error = false) => {
-    dispatch(setNotification(message, error));
-  };
-
-  if (user === null) {
+  if (login === null) {
     return (
       <div>
         {notification && <Notification {...notification} />}
-        <LoginForm userLogin={handleLogin} />
+        <LoginForm onUserLogin={handleUserLogin} />
       </div>
     );
   } else {
@@ -86,23 +57,26 @@ const App = () => {
         <h2>Blogs</h2>
         {notification && <Notification {...notification} />}
         <p>
-          {user.name} logged in<button onClick={handleLogout}>Logout</button>
+          {login.name} logged in
+          <button onClick={() => dispatch(logoutUser())}>Logout</button>
         </p>
 
-        <Togglable buttonLabel="New Blog">
-          <BlogForm addBlog={handleAddBlog} />
-        </Togglable>
-        <div id="blog-list">
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              addLike={handleAddLike}
-              removeBlog={handleRemoveBlog}
-            />
-          ))}
-        </div>
+        <Router>
+          <Switch>
+            <Route path="/users">
+              <Users users={users} />
+            </Route>
+            <Route path="/">
+              <BlogList
+                blogs={blogs}
+                user={login}
+                addLike={addLike}
+                deleteBlog={deleteBlog}
+                onCreateBlog={handleCreateBlog}
+              />
+            </Route>
+          </Switch>
+        </Router>
       </div>
     );
   }

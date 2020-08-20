@@ -7,7 +7,7 @@ describe('<BlogForm />', () => {
   test('form handler is called with the correct details when new blog is created', () => {
     const addBlogMock = jest.fn();
 
-    const component = render(<BlogForm addBlog={addBlogMock} />);
+    const component = render(<BlogForm onCreateBlog={addBlogMock} />);
 
     const input = component.container.querySelector('input#title');
     const form = component.container.querySelector('form');

@@ -1,11 +1,12 @@
 import React from 'react';
 
-const BlogDetails = ({ blog, user, display, addLike, removeBlog }) => {
+const BlogDetails = ({ blog, user, display, addLike, deleteBlog }) => {
   const confirmDelete = () => {
     if (window.confirm(`Remove blog ${blog.title}`)) {
-      removeBlog(blog.id);
+      deleteBlog(blog.id);
     }
   };
+
   return (
     <div className="blog-details" style={{ display }}>
       {blog.url}

@@ -1,19 +1,18 @@
+import deepFreeze from 'deep-freeze';
 import userReducer from './userReducer';
 
 describe('userReducer', () => {
-  test('returns new state with action LOGIN_USER', () => {
-    const state = null;
+  test('returns new state with action INIT_USERS', () => {
+    const state = [];
     const action = {
-      type: 'LOGIN_USER',
-      data: {
-        username: 'emil',
-        password: 'asd',
-      },
+      type: 'INIT_USERS',
+      data: [{ username: 'emil' }, { username: 'xxx' }],
     };
 
+    deepFreeze(state);
     const newState = userReducer(state, action);
 
-    expect(newState).not.toBeNull();
-    expect(newState).toMatchObject({ username: 'emil' });
+    expect(newState).toHaveLength(2);
+    expect(newState).toContainEqual(action.data[0]);
   });
 });

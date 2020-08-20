@@ -1,4 +1,5 @@
 import blogService from '../services/blogs';
+import { setNotification } from './notificationReducer';
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -17,21 +18,31 @@ const blogReducer = (state = [], action) => {
 
 export const createBlog = (content) => {
   return async (dispatch) => {
-    const blog = await blogService.create(content);
-    dispatch({
-      type: 'NEW_BLOG',
-      data: blog,
-    });
+    try {
+      const blog = await blogService.create(content);
+      dispatch({
+        type: 'NEW_BLOG',
+        data: blog,
+      });
+      dispatch(setNotification('Blog successfully added'));
+    } catch (err) {
+      dispatch(setNotification(err.response.data.error, true));
+    }
   };
 };
 
 export const removeBlog = (id) => {
   return async (dispatch) => {
-    await blogService.remove(id);
-    dispatch({
-      type: 'REMOVE_BLOG',
-      data: { id },
-    });
+    try {
+      await blogService.remove(id);
+      dispatch({
+        type: 'REMOVE_BLOG',
+        data: { id },
+      });
+      dispatch(setNotification('Blog deleted successfully'));
+    } catch (err) {
+      dispatch(setNotification(err.response.data.error, true));
+    }
   };
 };
 
@@ -40,11 +51,15 @@ export const likeBlog = (blog) => {
   const newBlog = { ...blog, likes: newLikes };
 
   return async (dispatch) => {
-    const updatedBlog = await blogService.update(newBlog, blog.id);
-    dispatch({
-      type: 'LIKE_BLOG',
-      data: updatedBlog,
-    });
+    try {
+      const updatedBlog = await blogService.update(newBlog, blog.id);
+      dispatch({
+        type: 'LIKE_BLOG',
+        data: updatedBlog,
+      });
+    } catch (err) {
+      dispatch(setNotification(err.response.data.error, true));
+    }
   };
 };
 

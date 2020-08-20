@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BlogDetails from './BlogDetails';
 
-const Blog = ({ blog, user, addLike, removeBlog }) => {
+const Blog = ({ blog, user, addLike, deleteBlog }) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyles = {
@@ -22,7 +22,7 @@ const Blog = ({ blog, user, addLike, removeBlog }) => {
         blog={blog}
         user={user}
         addLike={addLike}
-        removeBlog={removeBlog}
+        deleteBlog={deleteBlog}
       />
     </div>
   );

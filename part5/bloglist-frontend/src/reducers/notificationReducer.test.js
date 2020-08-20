@@ -1,10 +1,10 @@
 import notificationReducer from './notificationReducer';
 
 describe('notificationReducer', () => {
-  test('returns new state with SET_NOTIFICATION', () => {
+  test('returns new state with SHOW_NOTIFICATION', () => {
     const state = null;
     const action = {
-      type: 'SET_NOTIFICATION',
+      type: 'SHOW_NOTIFICATION',
       data: {
         notification: 'Blog post successfully added',
         error: false,
