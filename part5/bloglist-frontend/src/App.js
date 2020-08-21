@@ -46,7 +46,9 @@ const App = () => {
         </p>
 
         <Switch>
-          <Route path="/users/:id">{user && <User user={user} />}</Route>
+          <Route path="/users/:id">
+            <User user={user} />
+          </Route>
           <Route path="/users">
             <Users users={users} />
           </Route>
