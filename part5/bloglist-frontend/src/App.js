@@ -1,26 +1,23 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  initializeBlogs,
-  likeBlog,
-  removeBlog,
-  createBlog,
-} from './reducers/blogReducer';
-import { initializeUser, logoutUser, loginUser } from './reducers/loginReducer';
+import { initializeBlogs } from './reducers/blogReducer';
+import { initializeUser, logoutUser } from './reducers/loginReducer';
 import { initUsers } from './reducers/userReducer';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import Users from './components/Users';
+import User from './components/User';
 
 const App = () => {
-  const { notification, login, blogs, users } = useSelector((state) => state);
   const dispatch = useDispatch();
 
+  const { notification, login, blogs, users } = useSelector((state) => state);
+
   useEffect(() => {
-    dispatch(initializeBlogs());
     dispatch(initUsers());
+    dispatch(initializeBlogs());
 
     const loggedInUser = window.localStorage.getItem('loggedInUser');
     if (loggedInUser) {
@@ -28,27 +25,14 @@ const App = () => {
     }
   }, [dispatch]);
 
-  const handleCreateBlog = (blogDetails) => {
-    dispatch(createBlog(blogDetails));
-  };
-
-  const addLike = (blog) => {
-    dispatch(likeBlog(blog));
-  };
-
-  const deleteBlog = (id) => {
-    dispatch(removeBlog(id));
-  };
-
-  const handleUserLogin = (credetials) => {
-    dispatch(loginUser(credetials));
-  };
+  const match = useRouteMatch('/users/:id');
+  const user = match ? users.find((u) => u.id === match.params.id) : null;
 
   if (login === null) {
     return (
       <div>
         {notification && <Notification {...notification} />}
-        <LoginForm onUserLogin={handleUserLogin} />
+        <LoginForm />
       </div>
     );
   } else {
@@ -61,22 +45,15 @@ const App = () => {
           <button onClick={() => dispatch(logoutUser())}>Logout</button>
         </p>
 
-        <Router>
-          <Switch>
-            <Route path="/users">
-              <Users users={users} />
-            </Route>
-            <Route path="/">
-              <BlogList
-                blogs={blogs}
-                user={login}
-                addLike={addLike}
-                deleteBlog={deleteBlog}
-                onCreateBlog={handleCreateBlog}
-              />
-            </Route>
-          </Switch>
-        </Router>
+        <Switch>
+          <Route path="/users/:id">{user && <User user={user} />}</Route>
+          <Route path="/users">
+            <Users users={users} />
+          </Route>
+          <Route path="/">
+            <BlogList blogs={blogs} user={login} />
+          </Route>
+        </Switch>
       </div>
     );
   }

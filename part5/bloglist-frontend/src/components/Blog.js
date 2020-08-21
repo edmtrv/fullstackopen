@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BlogDetails from './BlogDetails';
 
-const Blog = ({ blog, user, addLike, deleteBlog }) => {
+const Blog = ({ blog, user }) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyles = {
@@ -21,8 +21,6 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
         display={visible ? 'block' : 'none'}
         blog={blog}
         user={user}
-        addLike={addLike}
-        deleteBlog={deleteBlog}
       />
     </div>
   );
