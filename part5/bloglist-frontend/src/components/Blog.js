@@ -1,27 +1,36 @@
-import React, { useState } from 'react';
-import BlogDetails from './BlogDetails';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { likeBlog, removeBlog } from '../reducers/blogReducer';
 
-const Blog = ({ blog, user }) => {
-  const [visible, setVisible] = useState(false);
+const Blog = ({ blog, login }) => {
+  const dispatch = useDispatch();
 
-  const blogStyles = {
-    padding: 10,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
+  const confirmDelete = () => {
+    if (window.confirm(`Remove blog ${blog.title}`)) {
+      dispatch(removeBlog(blog.id));
+    }
   };
 
+  if (!blog || !login) {
+    return null;
+  }
+
   return (
-    <div className="blog" style={blogStyles}>
-      {blog.title} {blog.author}{' '}
-      <button onClick={() => setVisible((prevState) => !prevState)}>
-        {visible ? 'Hide' : 'View'}
-      </button>
-      <BlogDetails
-        display={visible ? 'block' : 'none'}
-        blog={blog}
-        user={user}
-      />
+    <div className="blog">
+      <p>
+        {blog.title} {blog.author}
+      </p>
+      <p>
+        <a href={blog.url}>{blog.url}</a>
+      </p>
+      <p>
+        Likes: <span className="blog-likes">{blog.likes}</span>{' '}
+        <button onClick={() => dispatch(likeBlog(blog))}>Like</button>
+      </p>
+      <p>{blog.user.name}</p>
+      {blog.user.username === login.username && (
+        <button onClick={confirmDelete}>Remove</button>
+      )}
     </div>
   );
 };
