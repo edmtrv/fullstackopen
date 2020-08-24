@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { likeBlog, removeBlog } from '../reducers/blogReducer';
+import Comment from './Comment';
 
 const Blog = ({ blog, login }) => {
   const dispatch = useDispatch();
@@ -31,18 +32,7 @@ const Blog = ({ blog, login }) => {
       {blog.user.username === login.username && (
         <button onClick={confirmDelete}>Remove</button>
       )}
-
-      <h4>Comments</h4>
-
-      {blog.comments ? (
-        <ul>
-          {blog.comments.map((comment) => (
-            <li key={comment.id}>{comment.content}</li>
-          ))}
-        </ul>
-      ) : (
-        'No comments yet'
-      )}
+      <Comment blog={blog} />
     </div>
   );
 };

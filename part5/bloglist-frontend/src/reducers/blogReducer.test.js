@@ -64,4 +64,31 @@ describe('blogReducer', () => {
 
     expect(newState).toHaveLength(0);
   });
+
+  test('returns new state with ADD_COMMENT action', () => {
+    const state = [
+      {
+        id: 1,
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'http://test.url',
+        likes: 0,
+        comments: [],
+      },
+    ];
+    const action = {
+      type: 'ADD_COMMENT',
+      data: {
+        content: 'My new comment',
+        blog: 1,
+      },
+    };
+
+    deepFreeze(state);
+
+    const newState = blogReducer(state, action);
+
+    expect(newState[0].comments).toHaveLength(1);
+    expect(newState[0].comments[0]).toContain(action.data.content);
+  });
 });
