@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Button, Form, ListGroup } from 'react-bootstrap';
 import { createComment } from '../reducers/blogReducer';
 
 const Comment = ({ blog }) => {
@@ -13,18 +14,21 @@ const Comment = ({ blog }) => {
   };
 
   return (
-    <div>
+    <div className="mt-4">
       <h4>Comments</h4>
-      <form onSubmit={addComment}>
-        <input value={content} onChange={(e) => setContent(e.target.value)} />
-        <button>Add Comment</button>
-      </form>
+      <Form inline onSubmit={addComment}>
+        <Form.Control
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <Button className="ml-2">Add Comment</Button>
+      </Form>
       {blog.comments ? (
-        <ul>
+        <ListGroup className="mt-4">
           {blog.comments.map((comment) => (
-            <li key={comment.id}>{comment.content}</li>
+            <ListGroup.Item key={comment.id}>{comment.content}</ListGroup.Item>
           ))}
-        </ul>
+        </ListGroup>
       ) : (
         'No comments yet'
       )}

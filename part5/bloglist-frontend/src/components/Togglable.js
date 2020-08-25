@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 const Togglable = (props) => {
@@ -11,12 +12,18 @@ const Togglable = (props) => {
 
   return (
     <div>
-      <button onClick={toggleVisliblity} style={hideWhenVisible}>
+      <Button
+        variant="primary"
+        onClick={toggleVisliblity}
+        style={hideWhenVisible}
+      >
         {props.buttonLabel}
-      </button>
+      </Button>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisliblity}>Cancel</button>
+        <Button variant="danger" onClick={toggleVisliblity}>
+          Cancel
+        </Button>
       </div>
     </div>
   );

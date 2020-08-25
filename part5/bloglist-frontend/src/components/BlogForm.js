@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Form, Button } from 'react-bootstrap';
 import { createBlog } from '../reducers/blogReducer';
 
 const BlogForm = () => {
@@ -22,38 +23,38 @@ const BlogForm = () => {
   return (
     <div className="formDiv">
       <h2>Create New</h2>
-      <form onSubmit={onFormSubmit}>
-        <div>
-          <label htmlFor="title">Title</label>
-          <input
+      <Form onSubmit={onFormSubmit}>
+        <Form.Group>
+          <Form.Label htmlFor="title">Title</Form.Label>
+          <Form.Control
             type="text"
             id="title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="author">Author</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="author">Author</Form.Label>
+          <Form.Control
             type="text"
             id="author"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="url">Url</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="url">Url</Form.Label>
+          <Form.Control
             type="text"
             id="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
-        </div>
-        <button id="create-button" type="submit">
+        </Form.Group>
+        <Button variant="primary" type="submit">
           Create
-        </button>
-      </form>
+        </Button>
+      </Form>
     </div>
   );
 };

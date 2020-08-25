@@ -1,28 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ListGroup } from 'react-bootstrap';
 import BlogForm from './BlogForm';
 import Togglable from './Togglable';
 
 const Blogs = ({ blogs }) => {
-  const blogStyles = {
-    padding: 10,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   return (
     <div>
+      <h2>Blogs</h2>
       <Togglable buttonLabel="New Blog">
         <BlogForm />
       </Togglable>
-      <div className="blogs">
+      <ListGroup>
         {blogs.map((blog) => (
-          <div key={blog.id} style={blogStyles}>
+          <ListGroup.Item key={blog.id}>
             <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </div>
+          </ListGroup.Item>
         ))}
-      </div>
+      </ListGroup>
     </div>
   );
 };

@@ -39,16 +39,16 @@ const App = () => {
 
   if (login === null) {
     return (
-      <div>
+      <div className="container">
         {notification && <Notification {...notification} />}
         <LoginForm />
       </div>
     );
   } else {
     return (
-      <div>
+      <div className="container">
         <Navigation login={login} />
-        <h2>Blogs</h2>
+
         {notification && <Notification {...notification} />}
 
         <Switch>

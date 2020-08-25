@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { Button } from 'react-bootstrap';
 import { likeBlog, removeBlog } from '../reducers/blogReducer';
 import Comment from './Comment';
 
@@ -26,11 +27,13 @@ const Blog = ({ blog, login }) => {
       </p>
       <p>
         Likes: <span className="blog-likes">{blog.likes}</span>{' '}
-        <button onClick={() => dispatch(likeBlog(blog))}>Like</button>
+        <Button onClick={() => dispatch(likeBlog(blog))}>Like</Button>
       </p>
       <p>{blog.user.name}</p>
       {blog.user.username === login.username && (
-        <button onClick={confirmDelete}>Remove</button>
+        <Button variant="danger" onClick={confirmDelete}>
+          Remove
+        </Button>
       )}
       <Comment blog={blog} />
     </div>

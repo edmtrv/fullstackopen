@@ -1,33 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { Button, Navbar, Nav } from 'react-bootstrap';
 import { logoutUser } from '../reducers/loginReducer';
 
 const Navigation = ({ login }) => {
   const dispatch = useDispatch();
 
-  const navItem = {
-    display: 'inline-block',
-    paddingRight: '10px',
-  };
-
   return (
-    <nav>
-      <ul
-        style={{ listStyle: 'none', backgroundColor: 'grey', padding: '10px' }}
-      >
-        <li style={navItem}>
+    <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav.Item className="mr-3">
           <Link to="/">Blogs</Link>
-        </li>
-        <li style={navItem}>
+        </Nav.Item>
+        <Nav.Item className="mr-auto">
           <Link to="/users">Users</Link>
-        </li>
-        <li style={navItem}>{login.name} logged in</li>
-        <li style={navItem}>
-          <button onClick={() => dispatch(logoutUser())}>Logout</button>
-        </li>
-      </ul>
-    </nav>
+        </Nav.Item>
+        <Nav.Item className="mr-3">
+          <Button variant="dark" onClick={() => dispatch(logoutUser())}>
+            Logout
+          </Button>
+        </Nav.Item>
+        <Nav.Item>{login.name} logged in</Nav.Item>
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 
