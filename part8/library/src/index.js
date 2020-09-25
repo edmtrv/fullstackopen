@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer, gql, UserInputError } = require('apollo-server');
 const mongoose = require('mongoose');
 const Book = require('./models/book');
 const Author = require('./models/author');
@@ -160,10 +160,29 @@ const resolvers = {
         author: bookAuthor._id,
       });
 
-      return book.save();
+      try {
+        await book.save();
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        });
+      }
+
+      return book;
     },
-    editAuthor: (root, { name, setBornTo }) =>
-      Author.findOneAndUpdate({ name }, { born: setBornTo }),
+    editAuthor: (root, { name, setBornTo }) => {
+      try {
+        return Author.findOneAndUpdate(
+          { name },
+          { born: setBornTo },
+          { new: true }
+        );
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        });
+      }
+    },
   },
 
   Book: {
