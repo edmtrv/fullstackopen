@@ -2,6 +2,7 @@ const { ApolloServer, gql, UserInputError } = require('apollo-server');
 const mongoose = require('mongoose');
 const Book = require('./models/book');
 const Author = require('./models/author');
+const author = require('./models/author');
 
 const MONGODB_URI =
   'mongodb+srv://emil:asddsa@cluster0.t347y.mongodb.net/libraryql?retryWrites=true&w=majority';
@@ -164,24 +165,27 @@ const resolvers = {
         await book.save();
       } catch (error) {
         throw new UserInputError(error.message, {
-          invalidArgs: args,
+          invalidArgs: { title, author, published, genres },
         });
       }
 
       return book;
     },
-    editAuthor: (root, { name, setBornTo }) => {
+    editAuthor: async (root, { name, setBornTo }) => {
+      let author;
       try {
-        return Author.findOneAndUpdate(
+        author = await Author.findOneAndUpdate(
           { name },
           { born: setBornTo },
           { new: true }
         );
       } catch (error) {
         throw new UserInputError(error.message, {
-          invalidArgs: args,
+          invalidArgs: { name, setBornTo },
         });
       }
+
+      return author;
     },
   },
 
