@@ -1,5 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server');
 const mongoose = require('mongoose');
+const Book = require('./models/book');
+const Author = require('./models/author');
 
 const MONGODB_URI =
   'mongodb+srv://emil:asddsa@cluster0.t347y.mongodb.net/libraryql?retryWrites=true&w=majority';
@@ -131,63 +133,45 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, { author, genre }) => {
-      if (!author && !genre) {
-        return books;
+    bookCount: () => Book.collection.countDocuments(),
+    authorCount: () => Author.collection.countDocuments(),
+    allBooks: (root, args) => {
+      if (!args.genre) {
+        return Book.find({});
       }
 
-      let filteredBooks = books;
-
-      if (author) {
-        filteredBooks = filteredBooks.filter((book) =>
-          book.author.name === author ? true : false
-        );
-      }
-
-      if (genre) {
-        filteredBooks = filteredBooks.filter((book) =>
-          book.genres.includes(genre) ? true : false
-        );
-      }
-
-      return filteredBooks;
+      return Book.find({ genres: { $in: args.genre } });
     },
-    allAuthors: () => authors,
+    allAuthors: () => Author.find({}),
   },
 
   Mutation: {
-    addBook: (root, args) => {
-      const book = { ...args, id: uuid() };
-      books = books.concat(book);
-      if (!authors.find((a) => a.name === args.author)) {
-        const author = { name: args.author, id: uuid() };
-        authors = authors.concat(author);
+    addBook: async (root, { title, author, published, genres }) => {
+      let bookAuthor = await Author.findOne({ name: author }).exec();
+
+      if (!bookAuthor) {
+        bookAuthor = await Author.create({ name: author });
       }
-      return book;
-    },
 
-    editAuthor: (root, { name, setBornTo }) => {
-      let newAuthor = null;
-
-      authors = authors.map((author) => {
-        if (author.name === name) {
-          newAuthor = { ...author, born: setBornTo };
-          return newAuthor;
-        }
-        return author;
+      const book = new Book({
+        title,
+        published,
+        genres,
+        author: bookAuthor._id,
       });
 
-      return newAuthor;
+      return book.save();
     },
+    editAuthor: (root, { name, setBornTo }) =>
+      Author.findOneAndUpdate({ name }, { born: setBornTo }),
+  },
+
+  Book: {
+    author: (root) => Author.findOne({ _id: root.author }),
   },
 
   Author: {
-    bookCount: (root) => {
-      const byAuthor = (book) => (book.author === root.name ? true : false);
-      return books.filter(byAuthor).length;
-    },
+    bookCount: (root) => Book.find({ author: root._id }).countDocuments(),
   },
 };
 
