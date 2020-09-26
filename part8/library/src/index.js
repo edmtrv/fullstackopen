@@ -159,10 +159,10 @@ const resolvers = {
     authorCount: () => Author.collection.countDocuments(),
     allBooks: (root, args) => {
       if (!args.genre) {
-        return Book.find({});
+        return Book.find({}).populate('author');
       }
 
-      return Book.find({ genres: { $in: args.genre } });
+      return Book.find({ genres: { $in: args.genre } }).populate('author');
     },
     allAuthors: () => Author.find({}),
   },
@@ -260,7 +260,7 @@ const server = new ApolloServer({
       const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET);
 
       const currentUser = await User.findById(decodedToken.id);
-      return currentUser;
+      return { currentUser };
     }
   },
 });
