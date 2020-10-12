@@ -13,22 +13,22 @@ interface ExerciseStats {
   average: number;
 }
 
-const parseExerciseArguments = (args: Array<string>): ExerciseValues => {
-  if (args.length < 4) throw new Error('Not enough arguments');
+export const parseExerciseArguments = (target: string, dailyHours: Array<string>): ExerciseValues => {
+  if (!target || !dailyHours) throw new Error('Parameters missing');
 
-  if (args.slice(2).every((a) => !isNaN(Number(a)))) {
+  if (!isNaN(Number(target)) && dailyHours.every((d) => !isNaN(Number(d)))) {
     return {
-      target: Number(args[2]),
-      dailyHours: args.slice(3).map((a) => Number(a)),
+      target: Number(target),
+      dailyHours: dailyHours.map((a) => Number(a)),
     };
   } else {
-    throw new Error('Provided values were not numbers');
+    throw new Error('Malformatted parameters');
   }
 };
 
-const calculateExercises = (
-  dailyHours: Array<number>,
-  target: number
+export const calculateExercises = (
+  target: number,
+  dailyHours: Array<number>
 ): ExerciseStats => {
   const periodLength = dailyHours.length;
   const trainingDays = dailyHours.filter((day) => day > 0).length;
@@ -57,10 +57,3 @@ const calculateExercises = (
     average,
   };
 };
-
-try {
-  const { target, dailyHours } = parseExerciseArguments(process.argv);
-  console.log(calculateExercises(dailyHours, target));
-} catch (e) {
-  console.log('There was an error:', e.message);
-}
