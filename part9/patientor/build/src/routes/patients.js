@@ -9,4 +9,15 @@ const router = express_1.default.Router();
 router.get('/', (_req, res) => {
     res.send(patientService_1.default.getPatientInfo());
 });
+router.post('/', (req, res) => {
+    const { name, dateOfBirth, ssn, gender, occupation } = req.body;
+    const newPatient = patientService_1.default.addPatient({
+        name,
+        dateOfBirth,
+        ssn,
+        gender,
+        occupation,
+    });
+    res.json(newPatient);
+});
 exports.default = router;
