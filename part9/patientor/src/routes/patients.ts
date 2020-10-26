@@ -5,7 +5,7 @@ import toNewPatient from '../utils';
 const router = express.Router();
 
 router.get('/', (_req, res) => {
-  res.send(patientService.getPatientInfo());
+  res.send(patientService.getPatientsInfo());
 });
 
 router.post('/', (req, res) => {
@@ -16,6 +16,16 @@ router.post('/', (req, res) => {
   } catch (e) {
     res.status(400).send(e.message);
   }
+});
+
+router.get('/:id', (req, res) => {
+  const patient = patientService.getPatient(req.params.id);
+
+  if (!patient) {
+    return res.status(400).send('No patient with this id');
+  }
+
+  return res.json(patient);
 });
 
 export default router;

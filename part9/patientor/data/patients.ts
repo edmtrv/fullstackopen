@@ -44,7 +44,7 @@ const data = [
   },
 ];
 
-const patients: Array<Patient> = data.map((p) => {
+const patients: Patient[] = data.map((p) => {
   const entry = toNewPatient(p) as Patient;
   entry.id = p.id;
   return entry;

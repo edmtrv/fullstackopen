@@ -8,7 +8,7 @@ const patientService_1 = __importDefault(require("../services/patientService"));
 const utils_1 = __importDefault(require("../utils"));
 const router = express_1.default.Router();
 router.get('/', (_req, res) => {
-    res.send(patientService_1.default.getPatientInfo());
+    res.send(patientService_1.default.getPatientsInfo());
 });
 router.post('/', (req, res) => {
     try {
@@ -19,5 +19,12 @@ router.post('/', (req, res) => {
     catch (e) {
         res.status(400).send(e.message);
     }
+});
+router.get('/:id', (req, res) => {
+    const patient = patientService_1.default.getPatient(req.params.id);
+    if (!patient) {
+        return res.status(400).send('No patient with this id');
+    }
+    return res.json(patient);
 });
 exports.default = router;
