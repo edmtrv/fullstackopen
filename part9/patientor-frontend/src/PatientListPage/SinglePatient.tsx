@@ -29,7 +29,7 @@ const SinglePatient: React.FC = () => {
   if (!patient) {
     return null;
   }
-
+  console.log(patient.entries);
   return (
     <div>
       <Container>
@@ -42,6 +42,19 @@ const SinglePatient: React.FC = () => {
           <br />
           occupation: {patient.occupation}
         </p>
+        <h4>Entries</h4>
+        {patient.entries.map((e) => (
+          <div key={e.id}>
+            <p>
+              {e.date} {e.description}
+            </p>
+            <ul>
+              {e.diagnosisCodes?.map((dc) => (
+                <li key={dc}>{dc}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </Container>
     </div>
   );
