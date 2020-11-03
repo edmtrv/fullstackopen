@@ -9,7 +9,7 @@ import { useStateValue } from "../state";
 import { setSinglePatient } from "../state/reducer";
 
 const SinglePatient: React.FC = () => {
-  const [{ patient }, dispatch] = useStateValue();
+  const [{ patient, diagnosis }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -26,10 +26,10 @@ const SinglePatient: React.FC = () => {
     fetchPatient();
   }, [dispatch]);
 
+  console.log(diagnosis);
   if (!patient) {
     return null;
   }
-  console.log(patient.entries);
   return (
     <div>
       <Container>
@@ -50,7 +50,9 @@ const SinglePatient: React.FC = () => {
             </p>
             <ul>
               {e.diagnosisCodes?.map((dc) => (
-                <li key={dc}>{dc}</li>
+                <li key={dc}>
+                  {dc} {diagnosis && diagnosis.find((d) => d.code === dc)?.name}
+                </li>
               ))}
             </ul>
           </div>
