@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Container, Icon } from "semantic-ui-react";
+import { Container, Segment, Icon } from "semantic-ui-react";
 
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from "../state";
 import { setSinglePatient } from "../state/reducer";
+import EntryDetails from "../components/EntryDetails";
 
 const SinglePatient: React.FC = () => {
-  const [{ patient, diagnosis }, dispatch] = useStateValue();
+  const [{ patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -26,7 +27,6 @@ const SinglePatient: React.FC = () => {
     fetchPatient();
   }, [dispatch]);
 
-  console.log(diagnosis);
   if (!patient) {
     return null;
   }
@@ -42,20 +42,11 @@ const SinglePatient: React.FC = () => {
           <br />
           occupation: {patient.occupation}
         </p>
-        <h4>Entries</h4>
+        <h3>Entries</h3>
         {patient.entries.map((e) => (
-          <div key={e.id}>
-            <p>
-              {e.date} {e.description}
-            </p>
-            <ul>
-              {e.diagnosisCodes?.map((dc) => (
-                <li key={dc}>
-                  {dc} {diagnosis && diagnosis.find((d) => d.code === dc)?.name}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <Segment key={e.id}>
+            <EntryDetails entry={e} />
+          </Segment>
         ))}
       </Container>
     </div>
