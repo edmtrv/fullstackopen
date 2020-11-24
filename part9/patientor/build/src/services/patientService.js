@@ -23,4 +23,11 @@ const addPatient = (patient) => {
     patients_1.default.push(newPatient);
     return newPatient;
 };
-exports.default = { getPatientsInfo, addPatient, getPatient };
+const addEntry = (entry, patientId) => {
+    var _a;
+    const newEntry = Object.assign({ id: uuid_1.v4() }, entry);
+    console.log(newEntry);
+    (_a = patients_1.default.find((p) => p.id === patientId)) === null || _a === void 0 ? void 0 : _a.entries.push(newEntry);
+    return newEntry;
+};
+exports.default = { getPatientsInfo, addPatient, getPatient, addEntry };

@@ -1,6 +1,6 @@
 export type Entry = HospitalEntry | OccupationalHealthEntry | HealthCheckEntry;
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -55,7 +55,18 @@ export interface Patient {
 
 export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
 export type NewPatient = Omit<Patient, 'id'>;
+
 export enum Gender {
   Male = 'male',
   Female = 'female',
 }
+
+type NewHealthCheckEntry = Omit<HealthCheckEntry, 'id'>;
+type NewOccupationalHealthEntry = Omit<OccupationalHealthEntry, 'id'>;
+type NewHospitalEntry = Omit<HospitalEntry, 'id'>;
+
+export type NewBaseEntry = Omit<BaseEntry, 'id'>;
+export type NewEntry =
+  | NewHealthCheckEntry
+  | NewOccupationalHealthEntry
+  | NewHospitalEntry;

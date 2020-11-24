@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatient, Gender } from './types';
+import { NewPatient, Gender } from '../types';
 
 const toNewPatient = (object: any): NewPatient => {
   return {
