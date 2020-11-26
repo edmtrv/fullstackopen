@@ -4,7 +4,7 @@ import { useStateValue } from "../state";
 import { HospitalEntry } from "../types";
 
 const Hospital: FC<{ entry: HospitalEntry }> = ({ entry }) => {
-  const [{ diagnosis }] = useStateValue();
+  const [{ diagnoses }] = useStateValue();
   return (
     <div>
       <h4>
@@ -14,7 +14,7 @@ const Hospital: FC<{ entry: HospitalEntry }> = ({ entry }) => {
       <List>
         {entry.diagnosisCodes?.map((dc) => (
           <List.Item key={dc}>
-            {dc} {diagnosis && diagnosis.find((d) => d.code === dc)?.name}
+            {dc} {diagnoses.find((d) => d.code === dc)?.name}
           </List.Item>
         ))}
       </List>

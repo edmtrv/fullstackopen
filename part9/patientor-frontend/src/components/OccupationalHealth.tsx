@@ -6,7 +6,7 @@ import { OccupationalHealthEntry } from "../types";
 const OccupationalHealth: FC<{ entry: OccupationalHealthEntry }> = ({
   entry,
 }) => {
-  const [{ diagnosis }] = useStateValue();
+  const [{ diagnoses }] = useStateValue();
   return (
     <div>
       <h4>
@@ -17,7 +17,7 @@ const OccupationalHealth: FC<{ entry: OccupationalHealthEntry }> = ({
       <List>
         {entry.diagnosisCodes?.map((dc) => (
           <List.Item key={dc}>
-            {dc} {diagnosis && diagnosis.find((d) => d.code === dc)?.name}
+            {dc} {diagnoses.find((d) => d.code === dc)?.name}
           </List.Item>
         ))}
       </List>

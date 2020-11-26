@@ -1,17 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Container, Segment, Icon } from "semantic-ui-react";
+import { Container, Segment, Icon, Button } from "semantic-ui-react";
 
-import { Patient } from "../types";
+import { Entry, Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from "../state";
-import { setSinglePatient } from "../state/reducer";
+import { addEntry, setSinglePatient } from "../state/reducer";
 import EntryDetails from "../components/EntryDetails";
+import AddEntryModal from "../AddEntryModal";
+import { HospitalEntryFormValues } from "../AddEntryModal/AddHospitalEntryForm";
 
 const SinglePatient: React.FC = () => {
   const [{ patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>();
+
+  const openModal = (): void => setModalOpen(true);
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -26,6 +37,20 @@ const SinglePatient: React.FC = () => {
     };
     fetchPatient();
   }, [dispatch]);
+
+  const submitNewEntry = async (values: HospitalEntryFormValues) => {
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      dispatch(addEntry(newEntry));
+      closeModal();
+    } catch (e) {
+      console.error(e.response.data);
+      setError(e.response.data.error);
+    }
+  };
 
   if (!patient) {
     return null;
@@ -43,12 +68,19 @@ const SinglePatient: React.FC = () => {
           occupation: {patient.occupation}
         </p>
         <h3>Entries</h3>
+        <Button onClick={() => openModal()}>Add Entry</Button>
         {patient.entries.map((e) => (
           <Segment key={e.id}>
             <EntryDetails entry={e} />
           </Segment>
         ))}
       </Container>
+      <AddEntryModal
+        modalOpen={modalOpen}
+        error={error}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+      />
     </div>
   );
 };
