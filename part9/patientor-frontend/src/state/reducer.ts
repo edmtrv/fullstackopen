@@ -21,6 +21,10 @@ export type Action =
   | {
       type: "ADD_ENTRY";
       payload: Entry;
+    }
+  | {
+      type: "SET_ENTRY_TYPE";
+      payload: "HealthCheck" | "OccupationalHealthcare" | "Hospital";
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -56,9 +60,23 @@ export const reducer = (state: State, action: Action): State => {
           entries: state.patient.entries.concat(action.payload),
         },
       };
+    case "SET_ENTRY_TYPE":
+      return {
+        ...state,
+        entryType: action.payload,
+      };
     default:
       return state;
   }
+};
+
+export const setEntryType = (
+  date: "HealthCheck" | "OccupationalHealthcare" | "Hospital"
+): Action => {
+  return {
+    type: "SET_ENTRY_TYPE",
+    payload: date,
+  };
 };
 
 export const setPatientList = (data: Patient[]): Action => {

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Container, Segment, Icon, Button } from "semantic-ui-react";
+import { Container, Segment, Icon, Button, Select } from "semantic-ui-react";
 
-import { Entry, Patient } from "../types";
+import { Entry, Patient, EntryFormValues } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from "../state";
-import { addEntry, setSinglePatient } from "../state/reducer";
+import { addEntry, setSinglePatient, setEntryType } from "../state/reducer";
 import EntryDetails from "../components/EntryDetails";
 import AddEntryModal from "../AddEntryModal";
-import { HospitalEntryFormValues } from "../AddEntryModal/AddHospitalEntryForm";
 
 const SinglePatient: React.FC = () => {
   const [{ patient }, dispatch] = useStateValue();
@@ -38,7 +37,17 @@ const SinglePatient: React.FC = () => {
     fetchPatient();
   }, [dispatch]);
 
-  const submitNewEntry = async (values: HospitalEntryFormValues) => {
+  const selectOptions = [
+    { key: "HealthCheck", value: "HealthCheck", text: "HealthCheck" },
+    {
+      key: "OccupationalHealthcare",
+      value: "OccupationalHealthcare",
+      text: "OccupationalHealthcare",
+    },
+    { key: "Hospital", value: "Hospital", text: "Hospital" },
+  ];
+
+  const submitNewEntry = async (values: EntryFormValues) => {
     try {
       const { data: newEntry } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${id}/entries`,
@@ -68,6 +77,21 @@ const SinglePatient: React.FC = () => {
           occupation: {patient.occupation}
         </p>
         <h3>Entries</h3>
+        <Select
+          onChange={({ currentTarget }) =>
+            dispatch(
+              setEntryType(
+                currentTarget.textContent as
+                  | "HealthCheck"
+                  | "OccupationalHealthcare"
+                  | "Hospital"
+              )
+            )
+          }
+          defaultValue={selectOptions[0].value}
+          placeholder="Select entry type"
+          options={selectOptions}
+        />
         <Button onClick={() => openModal()}>Add Entry</Button>
         {patient.entries.map((e) => (
           <Segment key={e.id}>

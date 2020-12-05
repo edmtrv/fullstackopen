@@ -58,3 +58,15 @@ export interface Patient {
   dateOfBirth?: string;
   entries: Entry[];
 }
+
+export type EntryFormValues =
+  | HospitalEntryFormValues
+  | HealthCheckEntryFormValues
+  | OccupationalHealthEntryFormValues;
+
+export type HospitalEntryFormValues = Omit<HospitalEntry, "id">;
+export type HealthCheckEntryFormValues = Omit<HealthCheckEntry, "id">;
+export type OccupationalHealthEntryFormValues = Omit<
+  OccupationalHealthEntry,
+  "id"
+>;

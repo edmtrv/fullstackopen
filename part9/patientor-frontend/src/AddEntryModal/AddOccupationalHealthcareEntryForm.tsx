@@ -1,16 +1,19 @@
 import React, { FC } from "react";
 import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
-import { HospitalEntryFormValues } from "../types";
+import { OccupationalHealthEntryFormValues } from "../types";
 import { TextField, DiagnosisSelection } from "../AddPatientModal/FormField";
 import { useStateValue } from "../state";
 
 interface Props {
-  onSubmit: (values: HospitalEntryFormValues) => void;
+  onSubmit: (values: OccupationalHealthEntryFormValues) => void;
   onCancel: () => void;
 }
 
-const AddHospitalEntryForm: FC<Props> = ({ onSubmit, onCancel }) => {
+const AddOccupationalHealthcareEntryForm: FC<Props> = ({
+  onSubmit,
+  onCancel,
+}) => {
   const [{ diagnoses }] = useStateValue();
 
   return (
@@ -20,10 +23,11 @@ const AddHospitalEntryForm: FC<Props> = ({ onSubmit, onCancel }) => {
         date: "",
         specialist: "",
         diagnosisCodes: [],
-        type: "Hospital",
-        discharge: {
-          date: "",
-          criteria: "",
+        type: "OccupationalHealthcare",
+        employerName: "",
+        sickLeave: {
+          startDate: "",
+          endDate: "",
         },
       }}
       validate={(values) => {
@@ -31,11 +35,9 @@ const AddHospitalEntryForm: FC<Props> = ({ onSubmit, onCancel }) => {
         const errors: { [field: string]: string } = {};
         if (!values.date) errors.date = requiredError;
         if (!values.description) errors.description = requiredError;
-        if (!values.discharge.criteria)
-          errors["discharge.criteria"] = requiredError;
-        if (!values.discharge.date) errors["discharge.date"] = requiredError;
         if (!values.specialist) errors.specialist = requiredError;
         if (!values.type) errors.type = requiredError;
+        if (!values.employerName) errors.type = requiredError;
         return errors;
       }}
       onSubmit={onSubmit}
@@ -68,15 +70,21 @@ const AddHospitalEntryForm: FC<Props> = ({ onSubmit, onCancel }) => {
               setFieldValue={setFieldValue}
             />
             <Field
-              label="Discharge Date"
-              placeholder="YYYY-MM-DD"
-              name="discharge.date"
+              label="Emloyer Name"
+              placeholder="Employer Name"
+              name="employerName"
               component={TextField}
             />
             <Field
-              label="Discharge Criteria"
-              placeholder="Discharge Criteria"
-              name="discharge.criteria"
+              label="Start Date"
+              placeholder="YYYY-MM-DD"
+              name="sickLeave.startDate"
+              component={TextField}
+            />
+            <Field
+              label="End Date"
+              placeholder="YYYY-MM-DD"
+              name="sickLeave.endDate"
               component={TextField}
             />
 
@@ -104,4 +112,4 @@ const AddHospitalEntryForm: FC<Props> = ({ onSubmit, onCancel }) => {
   );
 };
 
-export default AddHospitalEntryForm;
+export default AddOccupationalHealthcareEntryForm;
